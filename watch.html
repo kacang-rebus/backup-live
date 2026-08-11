@@ -1,4 +1,3 @@
-watch
 <!DOCTYPE html>
 <html lang="id" class="dark">
 <head>
@@ -20,9 +19,9 @@ watch
   <!-- Navbar -->
   <header class="bg-white dark:bg-black border-b border-gray-200 dark:border-[#404751] sticky top-0 z-40 transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-      <!-- Tombol Kembali ke Beranda -->
+      <!-- Tombol Kembali (Diubah menjadi hanya Kembali) -->
       <a href="index.html" class="flex items-center gap-2 text-sm font-semibold hover:text-[#896f3d] transition">
-        <span>←</span> Kembali ke Catalog
+        <span>←</span> Kembali
       </a>
       
       <!-- Judul Tengah -->
@@ -38,10 +37,10 @@ watch
     </div>
   </header>
 
-  <!-- Content Layout (2 Kolom di Layar Besar) -->
+  <!-- Content Layout (2 Kolom) -->
   <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
     
-    <!-- Area Pemutar Video Utama (Lebar 2 Kolom) -->
+    <!-- Area Pemutar Video Utama -->
     <div class="lg:col-span-2 flex flex-col gap-4">
       <div class="relative w-full overflow-hidden rounded-xl bg-black border border-gray-300 dark:border-[#404751] shadow-2xl" style="padding-top: 56.25%;">
         <iframe id="doodPlayer" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
@@ -50,14 +49,25 @@ watch
       <div>
         <span id="videoCategory" class="text-xs font-semibold text-[#896f3d] uppercase tracking-wider"></span>
         <h1 id="videoTitle" class="text-xl md:text-2xl font-bold mt-1 text-black dark:text-white">Memuat Judul...</h1>
-        <p id="videoMeta" class="text-xs text-gray-500 dark:text-gray-400 mt-1"></p>
+        <!-- Tanggal tanpa kata "Bulan:" -->
+        <p id="videoMeta" class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium"></p>
+
+        <!-- Kolom Deskripsi ala YouTube -->
+        <div class="mt-4 p-4 rounded-xl bg-gray-100 dark:bg-[#181818] border border-gray-200 dark:border-[#333] text-sm text-black dark:text-gray-200 leading-relaxed">
+          <div class="font-bold text-xs text-gray-500 dark:text-gray-400 mb-1.5 flex items-center gap-1.5">
+            <span>📝</span> Deskripsi Video
+          </div>
+          <p id="videoDescription" class="whitespace-pre-line text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+            Memuat deskripsi...
+          </p>
+        </div>
       </div>
     </div>
 
-    <!-- Sidebar Rekomendasi Video (Lebar 1 Kolom) -->
+    <!-- Sidebar Rekomendasi Video -->
     <div class="lg:col-span-1">
       <h2 class="text-base font-bold mb-4 pb-2 border-b border-gray-200 dark:border-[#404751] flex items-center gap-2">
-        <span></span> Rekomendasi Video
+        <span>🎬</span> Rekomendasi Video
       </h2>
       <div id="recommendationsList" class="flex flex-col gap-4"></div>
     </div>
@@ -91,7 +101,7 @@ watch
       updateIcons();
     });
 
-    // Ambil Parameter kode dari URL (contoh: watch.html?code=abc123xyz)
+    // Ambil Parameter Kode dari URL
     const urlParams = new URLSearchParams(window.location.search);
     const currentCode = urlParams.get('code');
 
@@ -105,7 +115,7 @@ watch
         const response = await fetch('data.json');
         const videos = await response.json();
 
-        // Cari video yang sedang diputar
+        // Cari video aktif
         const currentVideo = videos.find(v => v.dood_code === currentCode);
 
         if (!currentVideo) {
@@ -118,9 +128,24 @@ watch
         document.getElementById('doodPlayer').src = `https://dood.so/e/${currentVideo.dood_code}`;
         document.getElementById('videoTitle').innerText = currentVideo.title;
         document.getElementById('videoCategory').innerText = currentVideo.category;
-        document.getElementById('videoMeta').innerText = `Bulan: ${currentVideo.month || '-'} ${currentVideo.year || ''}`;
 
-        // Render Rekomendasi Video (Video lain selain yang sedang diputar)
+        // Format Tanggal (Contoh Output: 13 Juni 2026)
+        let formattedDate = "";
+        if (currentVideo.date) {
+          formattedDate = currentVideo.date;
+        } else {
+          const dayStr = currentVideo.day ? currentVideo.day + " " : "";
+          const monthStr = currentVideo.month || "";
+          const yearStr = currentVideo.year || "";
+          formattedDate = `${dayStr}${monthStr} ${yearStr}`.trim();
+        }
+        document.getElementById('videoMeta').innerText = formattedDate || "Tanggal tidak tersedia";
+
+        // Deskripsi Video ala YouTube
+        const defaultDesc = `Saksikan siaran ulang (replay) ${currentVideo.title}.\n\nNikmati penampilan terbaik member JKT48 pada pertunjukan ini. Selalu dukung terus JKT48!`;
+        document.getElementById('videoDescription').innerText = currentVideo.description || defaultDesc;
+
+        // Render Rekomendasi Video
         renderRecommendations(videos, currentVideo);
 
       } catch (err) {
@@ -132,10 +157,9 @@ watch
       const container = document.getElementById('recommendationsList');
       container.innerHTML = '';
 
-      // Filter: Keluarkan video yang sedang ditonton
       let otherVideos = allVideos.filter(v => v.dood_code !== currentVideo.dood_code);
 
-      // Urutkan agar video dengan kategori yang sama muncul lebih dulu di atas
+      // Utamakan kategori yang sama
       otherVideos.sort((a, b) => {
         if (a.category === currentVideo.category && b.category !== currentVideo.category) return -1;
         if (a.category !== currentVideo.category && b.category === currentVideo.category) return 1;
@@ -172,5 +196,3 @@ watch
   </script>
 </body>
 </html>
-
-
