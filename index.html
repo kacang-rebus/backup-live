@@ -147,7 +147,7 @@
 
     // --- STATE DATA & FILTER ---
     let allVideos = [];
-    let currentCategory = 'All';
+    let currentCategory = localStorage.getItem('selectedCategory') || 'All';
     let selectedYear = 'All';
     let selectedMonth = 'All';
 
@@ -270,16 +270,26 @@
     }
 
     function filterCategory(cat) {
-      currentCategory = cat;
-      document.querySelectorAll('.category-btn').forEach(btn => {
-        if(btn.innerText === cat || (cat === 'All' && btn.innerText === 'Semua')) {
-          btn.className = "category-btn active px-4 py-1.5 rounded-full bg-white dark:bg-black text-[#896f3d] font-semibold border border-[#896f3d] shadow-[0_0_8px_rgba(137,111,61,0.5)] whitespace-nowrap transition";
-        } else {
-          btn.className = "category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition";
-        }
-      });
-      applyFilters();
+  currentCategory = cat;
+  
+  // SIMPAN KATEGORI KE LOCALSTORAGE
+  localStorage.setItem('selectedCategory', cat);
+
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    if(btn.innerText === cat || (cat === 'All' && btn.innerText === 'Semua')) {
+      btn.className = "category-btn active px-4 py-1.5 rounded-full bg-white dark:bg-black text-[#896f3d] font-semibold border border-[#896f3d] shadow-[0_0_8px_rgba(137,111,61,0.5)] whitespace-nowrap transition";
+    } else {
+      btn.className = "category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition";
     }
+  });
+  applyFilters();
+      // --- INISIALISASI AWAL ---
+renderSidebar();
+filterCategory(currentCategory); // <-- Panggil fungsi ini agar tombol aktif sesuai kategori tersimpan
+loadVideos();
+      
+}
+  
 
     document.getElementById('searchInput').addEventListener('input', applyFilters);
 
