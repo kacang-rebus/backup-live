@@ -1,0 +1,22 @@
+data.json
+[
+  {
+    "id": 1,
+    "title": "Video Uji Coba Pertama",
+    "competition": "Demo",
+    "date": "11 Aug 2026",
+    "type": "Pratinjau",
+    "thumb": "https://picsum.photos/600/340?random=1",
+    "dood_code": "abc123xyz"
+  },
+  {
+    "id": 2,
+    "title": "Video Uji Coba Kedua",
+    "competition": "Demo",
+    "date": "11 Aug 2026",
+    "type": "Pratinjau",
+    "thumb": "https://picsum.photos/600/340?random=2",
+    "dood_code": "def456uvw"
+  }
+]
+
