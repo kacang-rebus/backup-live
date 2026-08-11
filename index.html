@@ -39,10 +39,10 @@
 
     <!-- Filter Categories / Tabs -->
     <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 text-sm no-scrollbar" id="filterContainer">
-      <button onclick="filterCategory('All')" class="category-btn active px-4 py-1.5 rounded-full bg-black text-white font-medium border-2 border-[#896f3d] shadow-[0_0_10px_rgba(137,111,61,0.6)] whitespace-nowrap transition">Semua</button>
-      <button onclick="filterCategory('Premier League')" class="category-btn px-4 py-1.5 rounded-full bg-black text-white font-medium border border-[#404751] hover:border-[#896f3d] whitespace-nowrap transition">Premier League</button>
-      <button onclick="filterCategory('La Liga')" class="category-btn px-4 py-1.5 rounded-full bg-black text-white font-medium border border-[#404751] hover:border-[#896f3d] whitespace-nowrap transition">La Liga</button>
-      <button onclick="filterCategory('Serie A')" class="category-btn px-4 py-1.5 rounded-full bg-black text-white font-medium border border-[#404751] hover:border-[#896f3d] whitespace-nowrap transition">Serie A</button>
+      <button onclick="filterCategory('All')" class="category-btn active px-4 py-1.5 rounded-full bg-black text-[#896f3d] font-semibold border border-[#896f3d] shadow-[0_0_8px_rgba(137,111,61,0.5)] whitespace-nowrap transition">Semua</button>
+      <button onclick="filterCategory('Premier League')" class="category-btn px-4 py-1.5 rounded-full bg-black text-white font-medium border border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Premier League</button>
+      <button onclick="filterCategory('La Liga')" class="category-btn px-4 py-1.5 rounded-full bg-black text-white font-medium border border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">La Liga</button>
+      <button onclick="filterCategory('Serie A')" class="category-btn px-4 py-1.5 rounded-full bg-black text-white font-medium border border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Serie A</button>
     </div>
 
     <!-- Grid Katalog Video -->
@@ -132,9 +132,11 @@
       currentCategory = cat;
       document.querySelectorAll('.category-btn').forEach(btn => {
         if(btn.innerText === cat || (cat === 'All' && btn.innerText === 'Semua')) {
-          btn.className = "category-btn active px-4 py-1.5 rounded-full bg-black text-white font-medium border-2 border-[#896f3d] shadow-[0_0_10px_rgba(137,111,61,0.6)] whitespace-nowrap transition";
+          // AKTIF: Background Hitam, Teks Emas, Border Emas Tipis + Glow
+          btn.className = "category-btn active px-4 py-1.5 rounded-full bg-black text-[#896f3d] font-semibold border border-[#896f3d] shadow-[0_0_8px_rgba(137,111,61,0.5)] whitespace-nowrap transition";
         } else {
-          btn.className = "category-btn px-4 py-1.5 rounded-full bg-black text-white font-medium border border-[#404751] hover:border-[#896f3d] whitespace-nowrap transition";
+          // TIDAK AKTIF: Background Hitam, Teks Putih, Border Abu-abu
+          btn.className = "category-btn px-4 py-1.5 rounded-full bg-black text-white font-medium border border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition";
         }
       });
       applyFilters();
@@ -157,4 +159,3 @@
   </script>
 </body>
 </html>
-
