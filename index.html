@@ -74,17 +74,6 @@
       <button onclick="filterCategory('Pajama Drive')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Pajama Drive</button>
     </div>
 
-    <!-- Video Player Section -->
-    <div id="playerSection" class="hidden mb-8 bg-white dark:bg-black border border-gray-300 dark:border-[#404751] rounded-xl p-4 shadow-2xl transition">
-      <div class="flex justify-between items-center mb-3">
-        <h2 id="activeVideoTitle" class="text-lg font-bold"></h2>
-        <button onclick="closePlayer()" class="font-bold text-sm bg-gray-200 dark:bg-black border border-gray-400 dark:border-[#404751] px-3 py-1 rounded transition hover:bg-gray-300 dark:hover:border-[#896f3d]">✕ Tutup</button>
-      </div>
-      <div class="relative w-full overflow-hidden rounded-lg bg-black" style="padding-top: 56.25%;">
-        <iframe id="doodPlayer" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
-      </div>
-    </div>
-
     <!-- Video Grid -->
     <div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"></div>
   </main>
@@ -204,7 +193,7 @@
         label.innerText = `Cari Judul dengan Bulan: ${month} ${year !== 'All' ? year : ''}`;
       }
 
-      toggleSidebar(); // Tutup sidebar setelah memilih
+      toggleSidebar();
       applyFilters();
     }
 
@@ -220,11 +209,12 @@
       try {
         const response = await fetch('data.json');
         allVideos = await response.json();
-        renderVideos(allVideos);
+        // Panggil applyFilters agar kategori dari localStorage langsung terpasang saat data dimuat
+        applyFilters();
       } catch (err) { console.error("Gagal memuat video:", err); }
     }
 
-        function renderVideos(videos) {
+    function renderVideos(videos) {
       const grid = document.getElementById('videoGrid');
       grid.innerHTML = '';
 
@@ -237,7 +227,6 @@
         const card = document.createElement('div');
         card.className = "bg-white dark:bg-black border border-gray-300 dark:border-[#404751] rounded-lg overflow-hidden shadow-lg hover:border-[#896f3d] transition duration-300 cursor-pointer group flex flex-col";
         
-        // UBAH BARIS INI: Pindah ke watch.html membawa parameter dood_code
         card.onclick = () => {
           window.location.href = `watch.html?code=${v.dood_code}`;
         };
@@ -256,40 +245,21 @@
       });
     }
 
-
-    function playVideo(title, code) {
-      document.getElementById('activeVideoTitle').innerText = title;
-      document.getElementById('doodPlayer').src = `https://dood.so/e/${code}`;
-      document.getElementById('playerSection').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function closePlayer() {
-      document.getElementById('doodPlayer').src = '';
-      document.getElementById('playerSection').classList.add('hidden');
-    }
-
     function filterCategory(cat) {
-  currentCategory = cat;
-  
-  // SIMPAN KATEGORI KE LOCALSTORAGE
-  localStorage.setItem('selectedCategory', cat);
-
-  document.querySelectorAll('.category-btn').forEach(btn => {
-    if(btn.innerText === cat || (cat === 'All' && btn.innerText === 'Semua')) {
-      btn.className = "category-btn active px-4 py-1.5 rounded-full bg-white dark:bg-black text-[#896f3d] font-semibold border border-[#896f3d] shadow-[0_0_8px_rgba(137,111,61,0.5)] whitespace-nowrap transition";
-    } else {
-      btn.className = "category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition";
-    }
-  });
-  applyFilters();
-      // --- INISIALISASI AWAL ---
-renderSidebar();
-filterCategory(currentCategory); // <-- Panggil fungsi ini agar tombol aktif sesuai kategori tersimpan
-loadVideos();
+      currentCategory = cat;
       
-}
-  
+      // Simpan kategori yang dipilih ke localStorage
+      localStorage.setItem('selectedCategory', cat);
+
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        if(btn.innerText === cat || (cat === 'All' && btn.innerText === 'Semua')) {
+          btn.className = "category-btn active px-4 py-1.5 rounded-full bg-white dark:bg-black text-[#896f3d] font-semibold border border-[#896f3d] shadow-[0_0_8px_rgba(137,111,61,0.5)] whitespace-nowrap transition";
+        } else {
+          btn.className = "category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition";
+        }
+      });
+      applyFilters();
+    }
 
     document.getElementById('searchInput').addEventListener('input', applyFilters);
 
@@ -302,9 +272,11 @@ loadVideos();
 
         // 1. Filter Kategori Bar Atas
         let matchesCategory = false;
-        if (currentCategory === 'All') matchesCategory = true;
-        else if (currentCategory === 'Special Show / Concert') matchesCategory = (v.category === 'Show' || v.category === 'Concert');
-        else matchesCategory = (v.category === currentCategory);
+        if (currentCategory === 'All') {
+          matchesCategory = true;
+        } else {
+          matchesCategory = (v.category === currentCategory);
+        }
 
         // 2. Filter Judul berdasarkan kata Bulan & Tahun dari Sidebar
         let matchesMonth = (selectedMonth === 'All') || titleLower.includes(selectedMonth.toLowerCase());
@@ -319,8 +291,9 @@ loadVideos();
       renderVideos(filtered);
     }
 
-    // Inisialisasi awal
+    // --- INISIALISASI AWAL ---
     renderSidebar();
+    filterCategory(currentCategory);
     loadVideos();
   </script>
 </body>
