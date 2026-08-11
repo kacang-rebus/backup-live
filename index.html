@@ -44,11 +44,10 @@
   <!-- Sidebar Overlay & Drawer -->
   <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden transition-opacity"></div>
   <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 bg-white dark:bg-black border-r border-gray-300 dark:border-[#404751] z-50 transform -translate-x-full transition-transform duration-300 ease-in-out p-4 pt-16 flex flex-col">
+    <!-- Diubah menjadi Catalog -->
     <div class="flex items-center justify-between mb-3 pb-2 border-b border-gray-200 dark:border-gray-800">
-      <h3 class="font-bold text-base flex items-center gap-2"><span>📅</span> Filter Judul (Bulan)</h3>
-      <button onclick="resetArchiveFilter()" id="resetArchiveBtn" class="hidden text-xs text-[#896f3d] font-semibold hover:underline">Reset</button>
+      <h3 class="font-bold text-base flex items-center gap-2"><span>📂</span> Catalog</h3>
     </div>
-    <div id="activeArchiveLabel" class="text-xs text-[#896f3d] font-medium mb-2 hidden"></div>
     <div id="sidebarAccordion" class="space-y-1 text-sm overflow-y-auto flex-grow pr-1"></div>
   </aside>
 
@@ -83,7 +82,6 @@
   </footer>
 
   <script>
-    // Konfigurasi Bulan & Tahun yang bisa difilter di judul
     const archiveConfig = [
       {
         year: "2026",
@@ -140,6 +138,7 @@
     let selectedYear = 'All';
     let selectedMonth = 'All';
 
+    // RENDER SIDEBAR CATALOG
     function renderSidebar() {
       const accordion = document.getElementById('sidebarAccordion');
       accordion.innerHTML = '';
@@ -147,18 +146,30 @@
       archiveConfig.forEach(item => {
         const itemEl = document.createElement('div');
         itemEl.className = "border-b border-gray-200 dark:border-gray-800 py-1";
+        
+        // Buat list tombol bulan
+        const monthButtons = item.months.map(m => {
+          const isActive = (selectedYear === item.year && selectedMonth === m);
+          
+          // Warna emas jika aktif, warna putih/normal jika tidak aktif
+          const textStyle = isActive 
+            ? "text-[#896f3d] font-bold" 
+            : "text-gray-700 dark:text-gray-300 font-medium hover:text-[#896f3d]";
+
+          return `
+            <button onclick="filterArchive('${item.year}', '${m}')" class="block w-full text-left text-xs py-1.5 transition ${textStyle}">
+              • ${m}
+            </button>
+          `;
+        }).join('');
+
         itemEl.innerHTML = `
           <button onclick="toggleYearAccordion('${item.year}')" class="w-full flex items-center justify-between py-2 font-semibold hover:text-[#896f3d] transition">
             <span>Tahun ${item.year}</span>
-            <span id="arrow-${item.year}" class="text-xs transition-transform duration-200">▶</span>
+            <span id="arrow-${item.year}" class="text-xs transition-transform duration-200 rotate-90">▼</span>
           </button>
-          <div id="months-${item.year}" class="hidden pl-3 space-y-1 pb-2">
-            <button onclick="filterArchive('${item.year}', 'All')" class="block w-full text-left text-xs py-1.5 text-gray-500 dark:text-gray-400 hover:text-[#896f3d] italic">Semua Video ${item.year}</button>
-            ${item.months.map(m => `
-              <button onclick="filterArchive('${item.year}', '${m}')" class="block w-full text-left text-xs py-1.5 text-gray-700 dark:text-gray-300 hover:text-[#896f3d] font-medium">
-                • Kata "${m}"
-              </button>
-            `).join('')}
+          <div id="months-${item.year}" class="pl-3 space-y-1 pb-2">
+            ${monthButtons}
           </div>
         `;
         accordion.appendChild(itemEl);
@@ -170,46 +181,33 @@
       const arrow = document.getElementById(`arrow-${year}`);
       if (monthDiv.classList.contains('hidden')) {
         monthDiv.classList.remove('hidden');
-        arrow.style.transform = 'rotate(90deg)';
+        arrow.style.transform = 'rotate(0deg)';
       } else {
         monthDiv.classList.add('hidden');
-        arrow.style.transform = 'rotate(0deg)';
+        arrow.style.transform = 'rotate(-90deg)';
       }
     }
 
+    // LOGIKA SELEKSI & RESET BULAN
     function filterArchive(year, month) {
-      selectedYear = year;
-      selectedMonth = month;
-      
-      const label = document.getElementById('activeArchiveLabel');
-      const resetBtn = document.getElementById('resetArchiveBtn');
-      
-      label.classList.remove('hidden');
-      resetBtn.classList.remove('hidden');
-
-      if (month === 'All') {
-        label.innerText = `Cari Judul dengan Tahun: ${year}`;
+      // Jika bulan yang sama diklik lagi saat sedang aktif -> LAKUKAN RESET
+      if (selectedYear === year && selectedMonth === month) {
+        selectedYear = 'All';
+        selectedMonth = 'All';
       } else {
-        label.innerText = `Cari Judul dengan Bulan: ${month} ${year !== 'All' ? year : ''}`;
+        selectedYear = year;
+        selectedMonth = month;
       }
-
-      toggleSidebar();
-      applyFilters();
-    }
-
-    function resetArchiveFilter() {
-      selectedYear = 'All';
-      selectedMonth = 'All';
-      document.getElementById('activeArchiveLabel').classList.add('hidden');
-      document.getElementById('resetArchiveBtn').classList.add('hidden');
-      applyFilters();
+      
+      renderSidebar(); // Update tampilan teks (emas / putih)
+      toggleSidebar(); // Tutup drawer setelah klik
+      applyFilters();  // Terapkan filter ke daftar video
     }
 
     async function loadVideos() {
       try {
         const response = await fetch('data.json');
         allVideos = await response.json();
-        // Panggil applyFilters agar kategori dari localStorage langsung terpasang saat data dimuat
         applyFilters();
       } catch (err) { console.error("Gagal memuat video:", err); }
     }
@@ -247,8 +245,6 @@
 
     function filterCategory(cat) {
       currentCategory = cat;
-      
-      // Simpan kategori yang dipilih ke localStorage
       localStorage.setItem('selectedCategory', cat);
 
       document.querySelectorAll('.category-btn').forEach(btn => {
@@ -278,7 +274,7 @@
           matchesCategory = (v.category === currentCategory);
         }
 
-        // 2. Filter Judul berdasarkan kata Bulan & Tahun dari Sidebar
+        // 2. Filter Judul berdasarkan Bulan & Tahun dari Drawer Catalog
         let matchesMonth = (selectedMonth === 'All') || titleLower.includes(selectedMonth.toLowerCase());
         let matchesYear = (selectedYear === 'All') || titleLower.includes(selectedYear.toLowerCase());
 
