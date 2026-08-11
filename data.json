@@ -1,22 +1,66 @@
-data.json
 [
   {
-    "id": 1,
-    "title": "Video Uji Coba Pertama",
-    "competition": "Demo",
-    "date": "11 Aug 2026",
-    "type": "Pratinjau",
-    "thumb": "https://picsum.photos/600/340?random=1",
-    "dood_code": "abc123xyz"
+    "title": "JKT48 Special Show Agustus 2026",
+    "category": "Special Show / Concert",
+    "dood_code": "abc12345",
+    "thumb": "https://via.placeholder.com/640x360",
+    "year": "2026",
+    "month": "Agustus"
   },
   {
-    "id": 2,
-    "title": "Video Uji Coba Kedua",
-    "competition": "Demo",
-    "date": "11 Aug 2026",
-    "type": "Pratinjau",
-    "thumb": "https://picsum.photos/600/340?random=2",
-    "dood_code": "def456uvw"
+    "title": "Passion 200% Live Juli 2026",
+    "category": "Passion 200%",
+    "dood_code": "def67890",
+    "thumb": "https://via.placeholder.com/640x360",
+    "year": "2026",
+    "month": "Juli"
+  },
+  {
+    "title": "Dream Bakudan Juni 2026",
+    "category": "Dream Bakudan",
+    "dood_code": "ghi11223",
+    "thumb": "https://via.placeholder.com/640x360",
+    "year": "2026",
+    "month": "Juni"
+  },
+  {
+    "title": "ITADAKI♡LOVE Performance Agustus 2026",
+    "category": "ITADAKI♡LOVE",
+    "dood_code": "jkl44556",
+    "thumb": "https://via.placeholder.com/640x360",
+    "year": "2026",
+    "month": "Agustus"
+  },
+  {
+    "title": "Pertaruhan Cinta Concert Juli 2026",
+    "category": "Pertaruhan Cinta",
+    "dood_code": "mno77889",
+    "thumb": "https://via.placeholder.com/640x360",
+    "year": "2026",
+    "month": "Juli"
+  },
+  {
+    "title": "Cara Meminum Ramune Show Juni 2026",
+    "category": "Cara Meminum Ramune",
+    "dood_code": "pqr99001",
+    "thumb": "https://via.placeholder.com/640x360",
+    "year": "2026",
+    "month": "Juni"
+  },
+  {
+    "title": "TWT JKT48 Agustus 2026",
+    "category": "TWT",
+    "dood_code": "stu22334",
+    "thumb": "https://via.placeholder.com/640x360",
+    "year": "2026",
+    "month": "Agustus"
+  },
+  {
+    "title": "Pajama Drive Juli 2026",
+    "category": "Pajama Drive",
+    "dood_code": "vwx55667",
+    "thumb": "https://via.placeholder.com/640x360",
+    "year": "2026",
+    "month": "Juli"
   }
 ]
-
