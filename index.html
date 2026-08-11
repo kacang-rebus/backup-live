@@ -19,7 +19,12 @@
   <!-- Navbar -->
   <header class="bg-white dark:bg-black border-b border-gray-200 dark:border-[#404751] sticky top-0 z-40 transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 py-4 grid grid-cols-3 items-center">
-      <div></div>
+      <div class="flex items-center">
+        <!-- Hamburger Button -->
+        <button id="menuToggle" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
       <a href="#" class="text-xl font-bold tracking-wide text-black dark:text-white uppercase flex items-center justify-center gap-2">
         <span class="bg-[#896f3d] text-white dark:text-black px-2 py-0.5 rounded text-sm font-semibold transition-colors duration-300">REPLAY</span> JKT48
       </a>
@@ -32,59 +37,50 @@
     </div>
   </header>
 
-  <!-- Content Container -->
-  <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full flex flex-col md:flex-row gap-6">
-    
-    <!-- SIDEBAR ARSIP TAHUN & BULAN -->
-    <aside class="w-full md:w-64 flex-shrink-0">
-      <div class="bg-white dark:bg-black border border-gray-300 dark:border-[#404751] rounded-xl p-4 shadow-sm sticky top-20">
-        <div class="flex items-center justify-between mb-3 pb-2 border-b border-gray-200 dark:border-gray-800">
-          <h3 class="font-bold text-base flex items-center gap-2">
-            <span>📅</span> Arsip Replay
-          </h3>
-          <button onclick="resetArchiveFilter()" id="resetArchiveBtn" class="hidden text-xs text-[#896f3d] font-semibold hover:underline">
-            Reset
-          </button>
-        </div>
-
-        <div id="activeArchiveLabel" class="text-xs text-[#896f3d] font-medium mb-2 hidden"></div>
-
-        <!-- Dynamic Accordion List -->
-        <div id="sidebarAccordion" class="space-y-1 text-sm max-h-[60vh] overflow-y-auto pr-1"></div>
-      </div>
-    </aside>
-
-    <!-- MAIN CONTENT AREA -->
-    <div class="flex-grow w-full min-w-0">
-      <div class="mb-6">
-        <input type="text" id="searchInput" placeholder="Cari video JKT48..." 
-               class="w-full bg-white dark:bg-black border border-gray-300 dark:border-[#404751] rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#896f3d] text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400">
-      </div>
-
-      <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 text-sm no-scrollbar" id="filterContainer">
-        <button onclick="filterCategory('All')" class="category-btn active px-4 py-1.5 rounded-full bg-white dark:bg-black text-[#896f3d] font-semibold border border-[#896f3d] shadow-[0_0_8px_rgba(137,111,61,0.5)] whitespace-nowrap transition">Semua</button>
-        <button onclick="filterCategory('Special Show / Concert')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Special Show / Concert</button>
-        <button onclick="filterCategory('Passion 200%')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Passion 200%</button>
-        <button onclick="filterCategory('Dream Bakudan')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Dream Bakudan</button>
-        <button onclick="filterCategory('ITADAKI♡LOVE')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">ITADAKI♡LOVE</button>
-        <button onclick="filterCategory('Pertaruhan Cinta')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Pertaruhan Cinta</button>
-        <button onclick="filterCategory('Cara Meminum Ramune')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Cara Meminum Ramune</button>
-        <button onclick="filterCategory('TWT')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">TWT</button>
-        <button onclick="filterCategory('Pajama Drive')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Pajama Drive</button>
-      </div>
-
-      <div id="playerSection" class="hidden mb-8 bg-white dark:bg-black border border-gray-300 dark:border-[#404751] rounded-xl p-4 shadow-2xl transition">
-        <div class="flex justify-between items-center mb-3">
-          <h2 id="activeVideoTitle" class="text-lg font-bold"></h2>
-          <button onclick="closePlayer()" class="font-bold text-sm bg-gray-200 dark:bg-black border border-gray-400 dark:border-[#404751] px-3 py-1 rounded transition hover:bg-gray-300 dark:hover:border-[#896f3d]">✕ Tutup</button>
-        </div>
-        <div class="relative w-full overflow-hidden rounded-lg bg-black" style="padding-top: 56.25%;">
-          <iframe id="doodPlayer" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
-        </div>
-      </div>
-
-      <div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5"></div>
+  <!-- Sidebar Drawer -->
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden transition-opacity"></div>
+  <aside id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-black border-r border-gray-300 dark:border-[#404751] z-50 transform -translate-x-full transition-transform duration-300 ease-in-out p-4 pt-20">
+    <div class="flex items-center justify-between mb-3 pb-2 border-b border-gray-200 dark:border-gray-800">
+      <h3 class="font-bold text-base flex items-center gap-2"><span>📅</span> Arsip Replay</h3>
+      <button onclick="resetArchiveFilter()" id="resetArchiveBtn" class="hidden text-xs text-[#896f3d] font-semibold hover:underline">Reset</button>
     </div>
+    <div id="activeArchiveLabel" class="text-xs text-[#896f3d] font-medium mb-2 hidden"></div>
+    <div id="sidebarAccordion" class="space-y-1 text-sm overflow-y-auto pr-1 h-[80vh]"></div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
+    <div class="mb-6">
+      <input type="text" id="searchInput" placeholder="Cari video JKT48..." 
+             class="w-full bg-white dark:bg-black border border-gray-300 dark:border-[#404751] rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#896f3d] text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400">
+    </div>
+
+    <!-- Filter Categories -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 text-sm no-scrollbar" id="filterContainer">
+      <!-- (Button categories sama seperti sebelumnya) -->
+      <button onclick="filterCategory('All')" class="category-btn active px-4 py-1.5 rounded-full bg-white dark:bg-black text-[#896f3d] font-semibold border border-[#896f3d] shadow-[0_0_8px_rgba(137,111,61,0.5)] whitespace-nowrap transition">Semua</button>
+      <button onclick="filterCategory('Special Show / Concert')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Special Show / Concert</button>
+      <button onclick="filterCategory('Passion 200%')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Passion 200%</button>
+      <button onclick="filterCategory('Dream Bakudan')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Dream Bakudan</button>
+      <button onclick="filterCategory('ITADAKI♡LOVE')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">ITADAKI♡LOVE</button>
+      <button onclick="filterCategory('Pertaruhan Cinta')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Pertaruhan Cinta</button>
+      <button onclick="filterCategory('Cara Meminum Ramune')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Cara Meminum Ramune</button>
+      <button onclick="filterCategory('TWT')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">TWT</button>
+      <button onclick="filterCategory('Pajama Drive')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Pajama Drive</button>
+    </div>
+
+    <!-- Video Player -->
+    <div id="playerSection" class="hidden mb-8 bg-white dark:bg-black border border-gray-300 dark:border-[#404751] rounded-xl p-4 shadow-2xl transition">
+      <div class="flex justify-between items-center mb-3">
+        <h2 id="activeVideoTitle" class="text-lg font-bold"></h2>
+        <button onclick="closePlayer()" class="font-bold text-sm bg-gray-200 dark:bg-black border border-gray-400 dark:border-[#404751] px-3 py-1 rounded transition hover:bg-gray-300 dark:hover:border-[#896f3d]">✕ Tutup</button>
+      </div>
+      <div class="relative w-full overflow-hidden rounded-lg bg-black" style="padding-top: 56.25%;">
+        <iframe id="doodPlayer" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5"></div>
   </main>
 
   <footer class="bg-white dark:bg-black border-t border-gray-200 dark:border-[#404751] py-4 text-center text-xs text-gray-500 dark:text-gray-400 transition">
@@ -92,33 +88,35 @@
   </footer>
 
   <script>
-    // --- KONFIGURASI ARSIP (DIPERBAIKI) ---
-    const archiveConfig = [
-      {
-        year: "2026",
-        months: ["Juni", "Juli", "Agustus"]
-      }
-    ];
+    // --- KONFIGURASI ARSIP ---
+    const archiveConfig = [{ year: "2026", months: ["Juni", "Juli", "Agustus"] }];
 
-    const themeToggle = document.getElementById('themeToggle');
-    const sunIcon = document.getElementById('sunIcon');
-    const moonIcon = document.getElementById('moonIcon');
+    // Sidebar Toggle Logic
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
 
-    function updateIcons() {
-      if (document.documentElement.classList.contains('dark')) {
-        sunIcon.classList.add('hidden');
-        moonIcon.classList.remove('hidden');
+    function toggleSidebar() {
+      const isOpen = sidebar.classList.contains('translate-x-0');
+      if (isOpen) {
+        sidebar.classList.remove('translate-x-0');
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
       } else {
-        sunIcon.classList.remove('hidden');
-        moonIcon.classList.add('hidden');
+        sidebar.classList.add('translate-x-0');
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
       }
     }
-    updateIcons();
 
+    menuToggle.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', toggleSidebar);
+
+    // Theme & Data Logic (Sama seperti sebelumnya)
+    const themeToggle = document.getElementById('themeToggle');
     themeToggle.addEventListener('click', () => {
       document.documentElement.classList.toggle('dark');
       localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-      updateIcons();
     });
 
     let allVideos = [];
@@ -126,26 +124,20 @@
     let selectedYear = 'All';
     let selectedMonth = 'All';
 
+    // (Fungsi renderSidebar, loadVideos, dll tetap sama)
     function renderSidebar() {
       const accordion = document.getElementById('sidebarAccordion');
       accordion.innerHTML = '';
-
       archiveConfig.forEach(item => {
         const itemEl = document.createElement('div');
-        itemEl.className = "border-b border-gray-100 dark:border-gray-800 last:border-none";
-        
         itemEl.innerHTML = `
-          <button onclick="toggleYearAccordion('${item.year}')" class="w-full flex items-center justify-between py-2 text-left font-semibold hover:text-[#896f3d] transition">
+          <button onclick="toggleYearAccordion('${item.year}')" class="w-full flex items-center justify-between py-2 font-semibold">
             <span>Tahun ${item.year}</span>
-            <span id="arrow-${item.year}" class="text-xs transition-transform duration-200">▶</span>
+            <span id="arrow-${item.year}">▶</span>
           </button>
-          <div id="months-${item.year}" class="hidden pl-3 space-y-1 pb-2">
-            <button onclick="filterArchive('${item.year}', 'All')" class="block w-full text-left text-xs py-1 text-gray-500 dark:text-gray-400 hover:text-[#896f3d] dark:hover:text-[#896f3d] italic">Semua Bulan ${item.year}</button>
-            ${item.months.map(m => `
-              <button onclick="filterArchive('${item.year}', '${m}')" class="archive-month-btn block w-full text-left text-xs py-1 text-gray-600 dark:text-gray-300 hover:text-[#896f3d] dark:hover:text-[#896f3d]">
-                • ${m}
-              </button>
-            `).join('')}
+          <div id="months-${item.year}" class="hidden pl-3 pb-2">
+            <button onclick="filterArchive('${item.year}', 'All')" class="block w-full text-left text-xs py-1 italic">Semua Bulan ${item.year}</button>
+            ${item.months.map(m => `<button onclick="filterArchive('${item.year}', '${m}'); toggleSidebar();" class="block w-full text-left text-xs py-1">• ${m}</button>`).join('')}
           </div>
         `;
         accordion.appendChild(itemEl);
@@ -154,65 +146,34 @@
 
     function toggleYearAccordion(year) {
       const monthDiv = document.getElementById(`months-${year}`);
-      const arrow = document.getElementById(`arrow-${year}`);
-      const isHidden = monthDiv.classList.contains('hidden');
-      
-      if (isHidden) {
-        monthDiv.classList.remove('hidden');
-        arrow.style.transform = 'rotate(90deg)';
-      } else {
-        monthDiv.classList.add('hidden');
-        arrow.style.transform = 'rotate(0deg)';
-      }
+      monthDiv.classList.toggle('hidden');
     }
 
     function filterArchive(year, month) {
       selectedYear = year;
       selectedMonth = month;
-      const label = document.getElementById('activeArchiveLabel');
-      const resetBtn = document.getElementById('resetArchiveBtn');
-      label.classList.remove('hidden');
-      resetBtn.classList.remove('hidden');
-      label.innerText = (month === 'All') ? `Arsip: Tahun ${year}` : `Arsip: ${month} ${year}`;
       applyFilters();
     }
 
     function resetArchiveFilter() {
       selectedYear = 'All';
       selectedMonth = 'All';
-      document.getElementById('activeArchiveLabel').classList.add('hidden');
-      document.getElementById('resetArchiveBtn').classList.add('hidden');
       applyFilters();
     }
 
     async function loadVideos() {
-      try {
-        const response = await fetch('data.json');
-        allVideos = await response.json();
-        renderVideos(allVideos);
-      } catch (err) { console.error("Gagal memuat:", err); }
+      try { const response = await fetch('data.json'); allVideos = await response.json(); renderVideos(allVideos); } 
+      catch (err) { console.error(err); }
     }
 
     function renderVideos(videos) {
       const grid = document.getElementById('videoGrid');
-      grid.innerHTML = videos.length === 0 ? `<div class="col-span-full text-center py-12 text-gray-500">Tidak ada video.</div>` : '';
+      grid.innerHTML = '';
       videos.forEach(v => {
         const card = document.createElement('div');
-        card.className = "bg-white dark:bg-black border border-gray-300 dark:border-[#404751] rounded-lg overflow-hidden shadow-lg hover:border-[#896f3d] transition duration-300 cursor-pointer group flex flex-col";
+        card.className = "border p-3 rounded-lg cursor-pointer";
         card.onclick = () => playVideo(v.title, v.dood_code);
-        card.innerHTML = `
-          <div class="relative aspect-video bg-gray-200 dark:bg-black overflow-hidden">
-            <img src="${v.thumb}" class="w-full h-full object-cover group-hover:scale-105 transition">
-            <span class="absolute top-2 left-2 bg-[#896f3d] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">${v.type || 'REPLAY'}</span>
-          </div>
-          <div class="p-3 flex-grow">
-            <div class="flex justify-between text-[11px] text-gray-500 dark:text-gray-400 mb-0.5">
-              <span>${v.category}</span>
-              <span>${v.month || ''} ${v.year || ''}</span>
-            </div>
-            <h3 class="text-sm font-semibold text-black dark:text-white group-hover:text-[#896f3d] line-clamp-2">${v.title}</h3>
-          </div>
-        `;
+        card.innerHTML = `<h3 class="font-semibold">${v.title}</h3>`;
         grid.appendChild(card);
       });
     }
@@ -221,37 +182,18 @@
       document.getElementById('activeVideoTitle').innerText = title;
       document.getElementById('doodPlayer').src = `https://dood.so/e/${code}`;
       document.getElementById('playerSection').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function closePlayer() {
-      document.getElementById('doodPlayer').src = '';
-      document.getElementById('playerSection').classList.add('hidden');
-    }
+    function closePlayer() { document.getElementById('playerSection').classList.add('hidden'); }
 
-    function filterCategory(cat) {
-      currentCategory = cat;
-      document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.className = (btn.innerText === cat || (cat === 'All' && btn.innerText === 'Semua')) 
-          ? "category-btn active px-4 py-1.5 rounded-full bg-white dark:bg-black text-[#896f3d] font-semibold border border-[#896f3d] shadow-[0_0_8px_rgba(137,111,61,0.5)] whitespace-nowrap transition"
-          : "category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition";
-      });
-      applyFilters();
-    }
-
-    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    function filterCategory(cat) { currentCategory = cat; applyFilters(); }
 
     function applyFilters() {
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = allVideos.filter(v => {
-        const matchesCategory = (currentCategory === 'All') ? true : 
-                                (currentCategory === 'Special Show / Concert') ? (v.category === 'Show' || v.category === 'Concert') : 
-                                (v.category === currentCategory);
-        const matchesYear = (selectedYear === 'All' || v.year === selectedYear);
-        const matchesMonth = (selectedMonth === 'All' || v.month === selectedMonth);
-        const matchesSearch = v.title.toLowerCase().includes(query) || v.category.toLowerCase().includes(query);
-        return matchesCategory && matchesYear && matchesMonth && matchesSearch;
-      });
+      const filtered = allVideos.filter(v => 
+        (currentCategory === 'All' || v.category === currentCategory) &&
+        (selectedYear === 'All' || v.year === selectedYear) &&
+        (selectedMonth === 'All' || v.month === selectedMonth)
+      );
       renderVideos(filtered);
     }
 
