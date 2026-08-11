@@ -6,7 +6,6 @@
   <title>Replay JKT48 Catalog</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // Inisialisasi tema dari LocalStorage agar tidak reset saat refresh
     if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
       document.documentElement.classList.remove('dark')
     } else {
@@ -20,20 +19,14 @@
   <!-- Navbar -->
   <header class="bg-white dark:bg-black border-b border-gray-200 dark:border-[#404751] sticky top-0 z-40 transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 py-4 grid grid-cols-3 items-center">
-      <!-- Kiri (kosong) -->
       <div></div>
-      
-      <!-- Tengah (Judul) -->
       <a href="#" class="text-xl font-bold tracking-wide text-black dark:text-white uppercase flex items-center justify-center gap-2">
-        <span class="bg-[#896f3d] text-white px-2 py-0.5 rounded text-sm font-semibold transition-colors duration-300">REPLAY</span> JKT48
+        <!-- REPLAY sekarang teksnya hitam saat dark mode -->
+        <span class="bg-[#896f3d] text-white dark:text-black px-2 py-0.5 rounded text-sm font-semibold transition-colors duration-300">REPLAY</span> JKT48
       </a>
-      
-      <!-- Kanan (Toggle Button) -->
       <div class="flex justify-end">
         <button id="themeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition">
-          <!-- Ikon Matahari (Light Mode) -->
           <svg id="sunIcon" class="hidden w-5 h-5 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-          <!-- Ikon Bulan (Dark Mode) -->
           <svg id="moonIcon" class="block w-5 h-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
       </div>
@@ -42,10 +35,22 @@
 
   <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
     
-    <!-- Search Bar -->
     <div class="mb-6">
       <input type="text" id="searchInput" placeholder="Cari video JKT48..." 
              class="w-full bg-white dark:bg-black border border-gray-300 dark:border-[#404751] rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#896f3d] text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400">
+    </div>
+
+    <!-- Filter Categories -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 text-sm no-scrollbar" id="filterContainer">
+      <button onclick="filterCategory('All')" class="category-btn active px-4 py-1.5 rounded-full bg-white dark:bg-black text-[#896f3d] font-semibold border border-[#896f3d] shadow-[0_0_8px_rgba(137,111,61,0.5)] whitespace-nowrap transition">Semua</button>
+      <button onclick="filterCategory('Special Show / Concert')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Special Show / Concert</button>
+      <button onclick="filterCategory('Passion 200%')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Passion 200%</button>
+      <button onclick="filterCategory('Dream Bakudan')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Dream Bakudan</button>
+      <button onclick="filterCategory('ITADAKI♡LOVE')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">ITADAKI♡LOVE</button>
+      <button onclick="filterCategory('Pertaruhan Cinta')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Pertaruhan Cinta</button>
+      <button onclick="filterCategory('Cara Meminum Ramune')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Cara Meminum Ramune</button>
+      <button onclick="filterCategory('TWT')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">TWT</button>
+      <button onclick="filterCategory('Pajama Drive')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Pajama Drive</button>
     </div>
 
     <!-- Player Section -->
@@ -59,13 +64,6 @@
       </div>
     </div>
 
-    <!-- Filter Categories -->
-    <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 text-sm no-scrollbar" id="filterContainer">
-      <button onclick="filterCategory('All')" class="category-btn active px-4 py-1.5 rounded-full bg-white dark:bg-black text-[#896f3d] font-semibold border border-[#896f3d] shadow-[0_0_8px_rgba(137,111,61,0.5)] whitespace-nowrap transition">Semua</button>
-      <button onclick="filterCategory('Show')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Show</button>
-      <button onclick="filterCategory('Concert')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Concert</button>
-    </div>
-
     <div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"></div>
   </main>
 
@@ -74,7 +72,6 @@
   </footer>
 
   <script>
-    // Logic Toggle Tema & LocalStorage
     const themeToggle = document.getElementById('themeToggle');
     const sunIcon = document.getElementById('sunIcon');
     const moonIcon = document.getElementById('moonIcon');
@@ -88,21 +85,14 @@
         moonIcon.classList.add('hidden');
       }
     }
-
-    // Set kondisi awal ikon saat halaman dimuat
     updateIcons();
 
     themeToggle.addEventListener('click', () => {
       document.documentElement.classList.toggle('dark');
-      if (document.documentElement.classList.contains('dark')) {
-        localStorage.theme = 'dark';
-      } else {
-        localStorage.theme = 'light';
-      }
+      localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
       updateIcons();
     });
 
-    // ... (Fungsi renderVideos, filterCategory, dll tetap sama)
     let allVideos = [];
     let currentCategory = 'All';
 
@@ -162,10 +152,19 @@
     document.getElementById('searchInput').addEventListener('input', applyFilters);
     function applyFilters() {
       const query = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = allVideos.filter(v => 
-        (currentCategory === 'All' || v.category === currentCategory) && 
-        (v.title.toLowerCase().includes(query) || v.category.toLowerCase().includes(query))
-      );
+      const filtered = allVideos.filter(v => {
+        let matchesCategory = false;
+        if (currentCategory === 'All') {
+          matchesCategory = true;
+        } else if (currentCategory === 'Special Show / Concert') {
+          matchesCategory = (v.category === 'Show' || v.category === 'Concert');
+        } else {
+          matchesCategory = (v.category === currentCategory);
+        }
+        
+        const matchesSearch = v.title.toLowerCase().includes(query) || v.category.toLowerCase().includes(query);
+        return matchesCategory && matchesSearch;
+      });
       renderVideos(filtered);
     }
 
