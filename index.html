@@ -40,9 +40,9 @@
     <!-- Filter Categories / Tabs -->
     <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 text-sm no-scrollbar" id="filterContainer">
       <button onclick="filterCategory('All')" class="category-btn active px-4 py-1.5 rounded-full bg-[#896f3d] text-white font-medium whitespace-nowrap transition">Semua</button>
-      <button onclick="filterCategory('Premier League')" class="category-btn px-4 py-1.5 rounded-full bg-[#1a293f] border border-[#404751] text-gray-300 hover:border-[#896f3d] whitespace-nowrap transition">Premier League</button>
-      <button onclick="filterCategory('La Liga')" class="category-btn px-4 py-1.5 rounded-full bg-[#1a293f] border border-[#404751] text-gray-300 hover:border-[#896f3d] whitespace-nowrap transition">La Liga</button>
-      <button onclick="filterCategory('Serie A')" class="category-btn px-4 py-1.5 rounded-full bg-[#1a293f] border border-[#404751] text-gray-300 hover:border-[#896f3d] whitespace-nowrap transition">Serie A</button>
+      <button onclick="filterCategory('Premier League')" class="category-btn px-4 py-1.5 rounded-full bg-black border border-[#404751] text-gray-300 hover:border-[#896f3d] whitespace-nowrap transition">Premier League</button>
+      <button onclick="filterCategory('La Liga')" class="category-btn px-4 py-1.5 rounded-full bg-black border border-[#404751] text-gray-300 hover:border-[#896f3d] whitespace-nowrap transition">La Liga</button>
+      <button onclick="filterCategory('Serie A')" class="category-btn px-4 py-1.5 rounded-full bg-black border border-[#404751] text-gray-300 hover:border-[#896f3d] whitespace-nowrap transition">Serie A</button>
     </div>
 
     <!-- Grid Katalog Video -->
@@ -51,7 +51,7 @@
     </div>
   </main>
 
-  <footer class="bg-[#1a293f] border-t border-[#404751] py-4 text-center text-xs text-gray-400">
+  <footer class="bg-black border-t border-[#404751] py-4 text-center text-xs text-gray-400">
     &copy; 2026 ArenaReplay. Integrated with Doodstream.
   </footer>
 
@@ -82,7 +82,7 @@
 
       videos.forEach(v => {
         const card = document.createElement('div');
-        card.className = "bg-[#1a293f] border border-[#404751] rounded-lg overflow-hidden shadow-lg hover:border-[#896f3d] transition duration-300 cursor-pointer group flex flex-col";
+        card.className = "bg-black border border-[#404751] rounded-lg overflow-hidden shadow-lg hover:border-[#896f3d] transition duration-300 cursor-pointer group flex flex-col";
         card.onclick = () => playVideo(v.title, v.dood_code);
 
         card.innerHTML = `
