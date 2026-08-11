@@ -7,7 +7,7 @@
   <!-- CDN Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#102134] text-gray-100 min-h-screen flex flex-col font-sans">
+<body class="bg-black text-gray-100 min-h-screen flex flex-col font-sans">
 
   <!-- Navbar -->
   <header class="bg-[#1a293f] border-b border-[#404751] sticky top-0 z-40">
@@ -19,7 +19,7 @@
       <!-- Search Bar -->
       <div class="w-full sm:w-72">
         <input type="text" id="searchInput" placeholder="Cari tim atau kompetisi..." 
-               class="w-full bg-[#102134] border border-[#404751] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#896f3d] text-white placeholder-gray-400">
+               class="w-full bg-black border border-[#404751] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#896f3d] text-white placeholder-gray-400">
       </div>
     </div>
   </header>
@@ -30,7 +30,7 @@
     <div id="playerSection" class="hidden mb-8 bg-[#1a293f] border border-[#404751] rounded-xl p-4 shadow-2xl">
       <div class="flex justify-between items-center mb-3">
         <h2 id="activeVideoTitle" class="text-lg font-bold text-white"></h2>
-        <button onclick="closePlayer()" class="text-gray-300 hover:text-white font-bold text-sm bg-[#102134] border border-[#404751] hover:border-[#896f3d] px-3 py-1 rounded transition">✕ Tutup Player</button>
+        <button onclick="closePlayer()" class="text-gray-300 hover:text-white font-bold text-sm bg-black border border-[#404751] hover:border-[#896f3d] px-3 py-1 rounded transition">✕ Tutup Player</button>
       </div>
       <div class="relative w-full overflow-hidden rounded-lg bg-black" style="padding-top: 56.25%;">
         <iframe id="doodPlayer" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
@@ -86,7 +86,7 @@
         card.onclick = () => playVideo(v.title, v.dood_code);
 
         card.innerHTML = `
-          <div class="relative aspect-video bg-[#102134] overflow-hidden">
+          <div class="relative aspect-video bg-black overflow-hidden">
             <img src="${v.thumb}" alt="${v.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
             <span class="absolute top-2 left-2 bg-[#896f3d] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">
               ${v.type}
