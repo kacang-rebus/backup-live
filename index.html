@@ -4,154 +4,140 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Replay Match Catalog</title>
-  <!-- CDN Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Konfigurasi Tailwind untuk mendeteksi class 'dark'
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
 </head>
-<body class="bg-black text-gray-100 min-h-screen flex flex-col font-sans">
+<body class="bg-white dark:bg-black text-black dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-300">
 
   <!-- Navbar -->
-  <header class="bg-black border-b border-[#404751] sticky top-0 z-40">
+  <header class="bg-white dark:bg-black border-b border-gray-200 dark:border-[#404751] sticky top-0 z-40 transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
       <a href="#" class="text-xl font-bold tracking-wide text-[#896f3d] uppercase flex items-center gap-2">
         <span class="bg-[#896f3d] text-black px-2 py-0.5 rounded text-sm font-semibold">REPLAY</span> ARENA
       </a>
       
-      <!-- Search Bar -->
-      <div class="w-full sm:w-72">
-        <input type="text" id="searchInput" placeholder="Cari tim atau kompetisi..." 
-               class="w-full bg-black border border-[#404751] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#896f3d] text-white placeholder-gray-400">
+      <div class="flex items-center gap-4 w-full sm:w-auto">
+        <!-- Search Bar -->
+        <div class="w-full sm:w-72">
+          <input type="text" id="searchInput" placeholder="Cari tim atau kompetisi..." 
+                 class="w-full bg-gray-100 dark:bg-black border border-gray-300 dark:border-[#404751] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#896f3d] text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400">
+        </div>
+        <!-- Theme Toggle Button -->
+        <button id="themeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition">
+          <svg id="sunIcon" class="hidden w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 7a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 10-1.414 1.414l.707.707z"></path></svg>
+          <svg id="moonIcon" class="block w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+        </button>
       </div>
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
-    
-    <!-- Player Section / Area Pemutar Video -->
-    <div id="playerSection" class="hidden mb-8 bg-black border border-[#404751] rounded-xl p-4 shadow-2xl">
+    <!-- Player Section -->
+    <div id="playerSection" class="hidden mb-8 bg-white dark:bg-black border border-gray-300 dark:border-[#404751] rounded-xl p-4 shadow-2xl transition">
       <div class="flex justify-between items-center mb-3">
-        <h2 id="activeVideoTitle" class="text-lg font-bold text-white"></h2>
-        <button onclick="closePlayer()" class="text-gray-300 hover:text-white font-bold text-sm bg-black border border-[#404751] hover:border-[#896f3d] px-3 py-1 rounded transition">✕ Tutup Player</button>
+        <h2 id="activeVideoTitle" class="text-lg font-bold"></h2>
+        <button onclick="closePlayer()" class="font-bold text-sm bg-gray-200 dark:bg-black border border-gray-400 dark:border-[#404751] px-3 py-1 rounded transition hover:bg-gray-300 dark:hover:border-[#896f3d]">✕ Tutup</button>
       </div>
       <div class="relative w-full overflow-hidden rounded-lg bg-black" style="padding-top: 56.25%;">
         <iframe id="doodPlayer" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
 
-    <!-- Filter Categories / Tabs -->
+    <!-- Filter Categories -->
     <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 text-sm no-scrollbar" id="filterContainer">
-      <button onclick="filterCategory('All')" class="category-btn active px-4 py-1.5 rounded-full bg-black text-[#896f3d] font-semibold border border-[#896f3d] shadow-[0_0_8px_rgba(137,111,61,0.5)] whitespace-nowrap transition">Semua</button>
-      <button onclick="filterCategory('Premier League')" class="category-btn px-4 py-1.5 rounded-full bg-black text-white font-medium border border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Premier League</button>
-      <button onclick="filterCategory('La Liga')" class="category-btn px-4 py-1.5 rounded-full bg-black text-white font-medium border border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">La Liga</button>
-      <button onclick="filterCategory('Serie A')" class="category-btn px-4 py-1.5 rounded-full bg-black text-white font-medium border border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Serie A</button>
+      <button onclick="filterCategory('All')" class="category-btn active px-4 py-1.5 rounded-full bg-white dark:bg-black text-[#896f3d] font-semibold border border-[#896f3d] shadow-[0_0_8px_rgba(137,111,61,0.5)] whitespace-nowrap transition">Semua</button>
+      <button onclick="filterCategory('Premier League')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Premier League</button>
+      <button onclick="filterCategory('La Liga')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">La Liga</button>
+      <button onclick="filterCategory('Serie A')" class="category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition">Serie A</button>
     </div>
 
-    <!-- Grid Katalog Video -->
-    <div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-      <!-- Card items loaded via JS -->
-    </div>
+    <div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"></div>
   </main>
 
-  <footer class="bg-black border-t border-[#404751] py-4 text-center text-xs text-gray-400">
+  <footer class="bg-white dark:bg-black border-t border-gray-200 dark:border-[#404751] py-4 text-center text-xs text-gray-500 dark:text-gray-400 transition">
     &copy; 2026 ArenaReplay. Integrated with Doodstream.
   </footer>
 
   <script>
+    // Theme Toggle Logic
+    const themeToggle = document.getElementById('themeToggle');
+    const sunIcon = document.getElementById('sunIcon');
+    const moonIcon = document.getElementById('moonIcon');
+
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      sunIcon.classList.toggle('hidden');
+      moonIcon.classList.toggle('hidden');
+    });
+
     let allVideos = [];
     let currentCategory = 'All';
 
-    // Load Data
     async function loadVideos() {
       try {
         const response = await fetch('data.json');
         allVideos = await response.json();
         renderVideos(allVideos);
-      } catch (err) {
-        console.error("Gagal memuat data video:", err);
-      }
+      } catch (err) { console.error("Gagal:", err); }
     }
 
-    // Render Cards
     function renderVideos(videos) {
       const grid = document.getElementById('videoGrid');
       grid.innerHTML = '';
-
-      if(videos.length === 0) {
-        grid.innerHTML = `<div class="col-span-full text-center py-10 text-gray-400">Video tidak ditemukan.</div>`;
-        return;
-      }
-
       videos.forEach(v => {
         const card = document.createElement('div');
-        card.className = "bg-black border border-[#404751] rounded-lg overflow-hidden shadow-lg hover:border-[#896f3d] transition duration-300 cursor-pointer group flex flex-col";
+        card.className = "bg-white dark:bg-black border border-gray-300 dark:border-[#404751] rounded-lg overflow-hidden shadow-lg hover:border-[#896f3d] transition duration-300 cursor-pointer group flex flex-col";
         card.onclick = () => playVideo(v.title, v.dood_code);
-
         card.innerHTML = `
-          <div class="relative aspect-video bg-black overflow-hidden">
-            <img src="${v.thumb}" alt="${v.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-            <span class="absolute top-2 left-2 bg-[#896f3d] text-black text-[10px] font-bold px-2 py-0.5 rounded uppercase">
-              ${v.type}
-            </span>
+          <div class="relative aspect-video bg-gray-200 dark:bg-black overflow-hidden">
+            <img src="${v.thumb}" class="w-full h-full object-cover group-hover:scale-105 transition">
+            <span class="absolute top-2 left-2 bg-[#896f3d] text-black text-[10px] font-bold px-2 py-0.5 rounded uppercase">${v.type}</span>
           </div>
-          <div class="p-3 flex-grow flex flex-col justify-between">
-            <div>
-              <span class="text-xs text-gray-400 font-medium">${v.competition}</span>
-              <h3 class="text-sm font-semibold text-white group-hover:text-[#896f3d] line-clamp-2 mt-0.5 transition">${v.title}</h3>
-            </div>
-            <div class="mt-3 text-[11px] text-gray-400 flex justify-between items-center">
-              <span>${v.date}</span>
-              <span class="text-[#896f3d] font-semibold">Tonton &rarr;</span>
-            </div>
+          <div class="p-3 flex-grow">
+            <span class="text-xs text-gray-500 dark:text-gray-400">${v.competition}</span>
+            <h3 class="text-sm font-semibold text-black dark:text-white group-hover:text-[#896f3d] line-clamp-2 mt-0.5">${v.title}</h3>
           </div>
         `;
         grid.appendChild(card);
       });
     }
 
-    // Play Video Function
     function playVideo(title, code) {
-      const playerSection = document.getElementById('playerSection');
-      const iframe = document.getElementById('doodPlayer');
-      const titleEl = document.getElementById('activeVideoTitle');
-
-      titleEl.innerText = title;
-      iframe.src = `https://dood.so/e/${code}`;
-      playerSection.classList.remove('hidden');
-
+      document.getElementById('activeVideoTitle').innerText = title;
+      document.getElementById('doodPlayer').src = `https://dood.so/e/${code}`;
+      document.getElementById('playerSection').classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function closePlayer() {
-      const playerSection = document.getElementById('playerSection');
-      const iframe = document.getElementById('doodPlayer');
-      iframe.src = '';
-      playerSection.classList.add('hidden');
+      document.getElementById('doodPlayer').src = '';
+      document.getElementById('playerSection').classList.add('hidden');
     }
 
-    // Filter Logic
     function filterCategory(cat) {
       currentCategory = cat;
       document.querySelectorAll('.category-btn').forEach(btn => {
         if(btn.innerText === cat || (cat === 'All' && btn.innerText === 'Semua')) {
-          // AKTIF: Background Hitam, Teks Emas, Border Emas Tipis + Glow
-          btn.className = "category-btn active px-4 py-1.5 rounded-full bg-black text-[#896f3d] font-semibold border border-[#896f3d] shadow-[0_0_8px_rgba(137,111,61,0.5)] whitespace-nowrap transition";
+          btn.className = "category-btn active px-4 py-1.5 rounded-full bg-white dark:bg-black text-[#896f3d] font-semibold border border-[#896f3d] shadow-[0_0_8px_rgba(137,111,61,0.5)] whitespace-nowrap transition";
         } else {
-          // TIDAK AKTIF: Background Hitam, Teks Putih, Border Abu-abu
-          btn.className = "category-btn px-4 py-1.5 rounded-full bg-black text-white font-medium border border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition";
+          btn.className = "category-btn px-4 py-1.5 rounded-full bg-white dark:bg-black text-black dark:text-white font-medium border border-gray-400 dark:border-[#404751] hover:border-[#896f3d] hover:text-[#896f3d] whitespace-nowrap transition";
         }
       });
       applyFilters();
     }
 
-    // Search Logic
     document.getElementById('searchInput').addEventListener('input', applyFilters);
-
     function applyFilters() {
       const query = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = allVideos.filter(v => {
-        const matchesCategory = (currentCategory === 'All') || (v.competition === currentCategory);
-        const matchesSearch = v.title.toLowerCase().includes(query) || v.competition.toLowerCase().includes(query);
-        return matchesCategory && matchesSearch;
-      });
+      const filtered = allVideos.filter(v => 
+        (currentCategory === 'All' || v.competition === currentCategory) && 
+        (v.title.toLowerCase().includes(query) || v.competition.toLowerCase().includes(query))
+      );
       renderVideos(filtered);
     }
 
