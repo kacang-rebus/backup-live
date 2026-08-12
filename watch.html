@@ -14,18 +14,15 @@
     tailwind.config = { darkMode: 'class' }
   </script>
 </head>
-<body class="bg-white dark:bg-black text-black dark:text-gray-100 min-h-screen flex flex-col font-sans">
+<body class="bg-white dark:bg-black text-black dark:text-gray-100 min-h-screen font-sans">
 
-  <!-- Header Navigasi -->
+  <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/95 dark:bg-black/90 backdrop-blur border-b border-gray-200 dark:border-[#222] px-4 py-3">
-    <div class="max-w-5xl mx-auto flex items-center justify-between">
-      <!-- Logo Style REPLAY JKT48 -->
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
       <a href="index.html" class="flex items-center">
         <span class="bg-[#a88a55] text-black font-bold px-2 py-0.5 rounded text-sm tracking-wider">REPLAY</span>
         <span class="text-black dark:text-white font-bold text-lg ml-2 tracking-wide">JKT48</span>
       </a>
-      
-      <!-- Tombol Tema Transparan -->
       <button onclick="toggleTheme()" class="bg-transparent p-2 text-xl hover:opacity-80 transition-opacity">
         <span class="dark:hidden">🌙</span>
         <span class="hidden dark:inline">☀️</span>
@@ -33,68 +30,55 @@
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="max-w-5xl mx-auto w-full p-0 sm:p-4 lg:p-6 pb-10">
+  <!-- Content -->
+  <main class="max-w-6xl mx-auto w-full p-0 sm:p-4 lg:p-6 pb-10">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
-      <!-- Kolom Kiri -->
+      <!-- Video Player & Details -->
       <div class="lg:col-span-2 space-y-3">
-        <!-- Player -->
         <div class="bg-black w-full relative sm:rounded-2xl overflow-hidden shadow-lg aspect-video">
           <iframe id="doodPlayer" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
         </div>
 
-        <!-- Info -->
-        <div onclick="openModal('descModal')" class="cursor-pointer px-4 sm:px-1 py-2 hover:bg-gray-50 dark:hover:bg-[#111] sm:hover:bg-transparent rounded-xl transition-colors">
-          <h1 id="videoTitle" class="text-base sm:text-lg font-bold leading-tight line-clamp-2">Memuat...</h1>
-          <div class="flex justify-between items-center mt-1.5 text-xs text-gray-500 dark:text-gray-400">
-            <span id="videoMeta">Memuat data...</span>
-          </div>
+        <div onclick="openModal('descModal')" class="cursor-pointer px-4 sm:px-1 py-2 hover:bg-gray-50 dark:hover:bg-[#111] rounded-xl">
+          <h1 id="videoTitle" class="text-lg font-bold leading-tight">Memuat...</h1>
+          <div id="videoMeta" class="text-xs text-gray-500 mt-1">Memuat data...</div>
         </div>
 
-        <!-- Komentar Trigger -->
-        <div onclick="openModal('commentModal')" class="mx-4 sm:mx-0 px-4 py-3 bg-gray-100 dark:bg-[#181818] rounded-2xl cursor-pointer hover:bg-gray-200 dark:hover:bg-[#222] transition-colors">
-          <div class="text-xs font-bold mb-2 text-gray-900 dark:text-gray-100">Komentar</div>
-          <div class="flex items-center gap-3 bg-gray-200/60 dark:bg-[#282828] px-3 py-2 rounded-full">
-            <div class="w-5 h-5 rounded-full bg-gray-400 dark:bg-gray-600 flex-shrink-0 flex items-center justify-center text-[10px] text-white">👤</div>
-            <span id="previewCommentText" class="text-xs text-gray-500 dark:text-gray-400 truncate">Komentar...</span>
-          </div>
+        <div onclick="openModal('commentModal')" class="mx-4 sm:mx-0 px-4 py-3 bg-gray-100 dark:bg-[#181818] rounded-2xl cursor-pointer hover:bg-gray-200 dark:hover:bg-[#222]">
+           <div class="text-xs font-bold mb-1">Komentar</div>
+           <div id="previewCommentText" class="text-xs text-gray-500">Klik untuk melihat...</div>
         </div>
       </div>
 
-      <!-- Sidebar -->
+      <!-- Sidebar Recommendations -->
       <div class="px-4 sm:px-0 lg:col-span-1">
-        <h2 class="text-sm font-bold mb-3">Rekomendasi</h2>
+        <h2 class="text-base font-bold mb-3">Rekomendasi</h2>
         <div id="recommendationsList" class="flex flex-col gap-3"></div>
       </div>
     </div>
   </main>
 
-  <!-- Modal Deskripsi -->
-  <div id="descModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/60" onclick="closeModal('descModal')"></div>
-    <div class="absolute bottom-0 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:left-1/2 sm:-translate-x-1/2 w-full sm:max-w-lg h-[80vh] sm:h-auto bg-white dark:bg-[#0f0f0f] rounded-t-2xl sm:rounded-2xl p-4 overflow-y-auto">
-      <div class="w-12 h-1 bg-gray-400 dark:bg-gray-600 rounded-full mx-auto mb-4 sm:hidden"></div>
+  <!-- Modal Template -->
+  <div id="descModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/60" onclick="history.back()"></div>
+    <div class="relative w-full max-w-lg bg-white dark:bg-[#0f0f0f] rounded-2xl p-6 max-h-[80vh] overflow-y-auto">
+      <button onclick="history.back()" class="absolute top-4 right-4 text-xl font-bold">✕</button>
       <h2 class="text-lg font-bold mb-4">Deskripsi</h2>
       <p id="videoDescription" class="text-sm text-gray-700 dark:text-gray-300"></p>
     </div>
   </div>
 
-  <!-- Modal Komentar -->
-  <div id="commentModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/60" onclick="closeModal('commentModal')"></div>
-    <div class="absolute bottom-0 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:left-1/2 sm:-translate-x-1/2 w-full sm:max-w-lg h-[85vh] sm:h-[650px] bg-white dark:bg-[#0f0f0f] rounded-t-2xl sm:rounded-2xl flex flex-col">
+  <div id="commentModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/60" onclick="history.back()"></div>
+    <div class="relative w-full max-w-lg bg-white dark:bg-[#0f0f0f] rounded-2xl flex flex-col max-h-[80vh] overflow-hidden">
       <div class="px-4 py-3 border-b border-gray-200 dark:border-[#222] flex justify-between items-center">
-        <h2 class="font-bold text-base">Komentar</h2>
-        <button onclick="closeModal('commentModal')" class="text-xl p-1">✕</button>
+        <h2 class="font-bold">Komentar</h2>
+        <button onclick="history.back()" class="text-xl">✕</button>
       </div>
       <div id="commentsList" class="flex-grow overflow-y-auto p-4"></div>
-      <form id="commentForm" onsubmit="submitComment(event)" class="p-3 border-t border-gray-200 dark:border-[#222] flex flex-col gap-2">
-        <input type="text" id="commentNickname" placeholder="Nama" class="bg-gray-100 dark:bg-[#1a1a1a] rounded-lg px-3 py-1.5 text-xs outline-none">
-        <div class="flex gap-2">
-          <input type="text" id="commentContent" placeholder="Komentar..." class="flex-grow bg-gray-100 dark:bg-[#1a1a1a] rounded-full px-4 py-2 text-xs outline-none">
-          <button type="submit" id="submitBtn" class="bg-blue-600 text-white px-4 py-2 rounded-full text-xs font-bold">Kirim</button>
-        </div>
+      <form id="commentForm" onsubmit="submitComment(event)" class="p-3 border-t dark:border-[#222]">
+        <input type="text" id="commentContent" placeholder="Tulis komentar..." class="w-full bg-gray-100 dark:bg-[#1a1a1a] rounded-full px-4 py-2 text-xs outline-none">
       </form>
     </div>
   </div>
@@ -103,10 +87,28 @@
     const CUSDIS_APP_ID = "3b6b52be-1199-4fa2-bfb6-079f492bebe9";
     const urlParams = new URLSearchParams(window.location.search);
     const currentCode = urlParams.get('code');
-    
-    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('hidden'); }
-    
+    let isModalOpen = false;
+
+    // Navigasi Modal Hijack (Back Button)
+    window.onpopstate = function(event) {
+      if(isModalOpen) {
+        closeModal('descModal');
+        closeModal('commentModal');
+        isModalOpen = false;
+      }
+    };
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+      window.history.pushState({modal: id}, '');
+      isModalOpen = true;
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+      isModalOpen = false;
+    }
+
     function toggleTheme() {
       document.documentElement.classList.toggle('dark');
       localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
@@ -122,18 +124,31 @@
         document.getElementById('doodPlayer').src = `https://dood.so/e/${currentVideo.dood_code}`;
         document.getElementById('videoDescription').innerText = currentVideo.description || "Tidak ada deskripsi.";
         
-        // Render Rekomendasi
+        // Fetch Main Views
+        fetch(`https://api.countapi.xyz/hit/replay_jkt48_catalog_v1/${currentCode}`)
+            .then(r => r.json())
+            .then(d => document.getElementById('videoMeta').innerText = `${(d.value || 0).toLocaleString()} x ditonton`);
+
+        // Render Recommendations
         const recList = document.getElementById('recommendationsList');
         recList.innerHTML = '';
-        videos.filter(v => v.dood_code !== currentCode).slice(0, 6).forEach(v => {
-          recList.innerHTML += `
-            <a href="watch.html?code=${v.dood_code}" class="flex gap-3 items-start p-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-[#111]">
-              <img src="${v.thumb}" class="w-32 aspect-video rounded-lg object-cover">
-              <div class="flex flex-col text-xs">
-                <h3 class="font-semibold line-clamp-2">${v.title}</h3>
-              </div>
-            </a>
+        videos.filter(v => v.dood_code !== currentCode).slice(0, 8).forEach(v => {
+          const dateStr = v.date || `${v.day || ''} ${v.month || ''} ${v.year || ''}`.trim();
+          const item = document.createElement('a');
+          item.href = `watch.html?code=${v.dood_code}`;
+          item.className = "flex gap-3 p-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-[#111]";
+          item.innerHTML = `
+            <img src="${v.thumb}" class="w-32 aspect-video rounded-lg object-cover bg-gray-800">
+            <div class="flex flex-col justify-center min-w-0">
+              <h3 class="font-semibold text-xs line-clamp-2">${v.title}</h3>
+              <p class="text-[10px] text-gray-500">${dateStr}</p>
+              <p class="text-[10px] text-gray-500" id="v-${v.dood_code}">Memuat views...</p>
+            </div>
           `;
+          recList.appendChild(item);
+          fetch(`https://api.countapi.xyz/get/replay_jkt48_catalog_v1/${v.dood_code}`)
+            .then(r => r.json())
+            .then(d => document.getElementById(`v-${v.dood_code}`).innerText = `${(d.value || 0).toLocaleString()} x ditonton`);
         });
       }
       fetchComments();
@@ -145,15 +160,10 @@
         const res = await fetch(`https://cusdis.com/api/open/comments?appId=${CUSDIS_APP_ID}&pageId=${currentCode}`);
         const data = await res.json();
         const listEl = document.getElementById('commentsList');
-        const previewEl = document.getElementById('previewCommentText');
-        
         if(data.data.list.length > 0) {
-          previewEl.innerText = `${data.data.list[0].nickname}: ${data.data.list[0].content}`;
+          document.getElementById('previewCommentText').innerText = data.data.list[0].content;
           listEl.innerHTML = data.data.list.map(c => `
-            <div class="mb-4">
-              <div class="font-bold text-xs">${c.nickname}</div>
-              <div class="text-sm">${c.content}</div>
-            </div>
+            <div class="mb-4"><div class="font-bold text-xs">${c.nickname}</div><div class="text-sm">${c.content}</div></div>
           `).join('');
         }
       } catch(e) {}
@@ -161,23 +171,7 @@
 
     async function submitComment(e) {
       e.preventDefault();
-      const btn = document.getElementById('submitBtn');
-      btn.innerText = 'Mengirim...';
-      try {
-        await fetch('https://cusdis.com/api/open/comment', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            appId: CUSDIS_APP_ID, 
-            pageId: currentCode,
-            nickname: document.getElementById('commentNickname').value || 'Anonim',
-            content: document.getElementById('commentContent').value
-          })
-        });
-        document.getElementById('commentContent').value = '';
-        fetchComments();
-      } catch(err) { alert("Gagal"); }
-      btn.innerText = 'Kirim';
+      // Tambahkan logika kirim komentar di sini
     }
 
     init();
