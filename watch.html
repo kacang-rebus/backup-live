@@ -5,23 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nonton Replay JKT48</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-      document.documentElement.classList.remove('dark')
-    } else {
-      document.documentElement.classList.add('dark')
-    }
-    tailwind.config = { darkMode: 'class' }
-  </script>
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+    
+    /* Animasi Bottom Sheet */
+    .sheet-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .hidden-sheet { transform: translateY(100%); }
+    .show-sheet { transform: translateY(0); }
+  </style>
 </head>
 <body class="bg-white dark:bg-black text-black dark:text-gray-100 min-h-screen font-sans">
 
   <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/95 dark:bg-black/90 backdrop-blur border-b border-gray-200 dark:border-[#222] px-4 py-3">
+  <header class="sticky top-0 z-40 bg-black/95 backdrop-blur px-4 py-3">
     <div class="max-w-6xl mx-auto flex items-center justify-between">
       <a href="index.html" class="flex items-center">
         <span class="bg-[#a88a55] text-black font-bold px-2 py-0.5 rounded text-sm tracking-wider">REPLAY</span>
-        <span class="text-black dark:text-white font-bold text-lg ml-2 tracking-wide">JKT48</span>
+        <span class="text-white font-bold text-lg ml-2 tracking-wide">JKT48</span>
       </a>
       <button onclick="toggleTheme()" class="bg-transparent p-2 text-xl hover:opacity-80 transition-opacity">
         <span class="dark:hidden">🌙</span>
@@ -30,55 +32,67 @@
     </div>
   </header>
 
-  <!-- Content -->
-  <main class="max-w-6xl mx-auto w-full p-0 sm:p-4 lg:p-6 pb-10">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      
-      <!-- Video Player & Details -->
-      <div class="lg:col-span-2 space-y-3">
-        <div class="bg-black w-full relative sm:rounded-2xl overflow-hidden shadow-lg aspect-video">
-          <iframe id="doodPlayer" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
-        </div>
-
-        <div onclick="openModal('descModal')" class="cursor-pointer px-4 sm:px-1 py-2 hover:bg-gray-50 dark:hover:bg-[#111] rounded-xl">
-          <h1 id="videoTitle" class="text-lg font-bold leading-tight">Memuat...</h1>
-          <div id="videoMeta" class="text-xs text-gray-500 mt-1">Memuat data...</div>
-        </div>
-
-        <div onclick="openModal('commentModal')" class="mx-4 sm:mx-0 px-4 py-3 bg-gray-100 dark:bg-[#181818] rounded-2xl cursor-pointer hover:bg-gray-200 dark:hover:bg-[#222]">
-           <div class="text-xs font-bold mb-1">Komentar</div>
-           <div id="previewCommentText" class="text-xs text-gray-500">Klik untuk melihat...</div>
-        </div>
+  <!-- Main Content -->
+  <main class="max-w-6xl mx-auto w-full p-4 lg:grid lg:grid-cols-3 gap-8">
+    
+    <!-- Kolom Kiri: Player & Info -->
+    <div class="lg:col-span-2 space-y-4">
+      <div class="bg-black w-full aspect-video rounded-xl overflow-hidden shadow-lg">
+        <iframe id="doodPlayer" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
       </div>
 
-      <!-- Sidebar Recommendations -->
-      <div class="px-4 sm:px-0 lg:col-span-1">
-        <h2 class="text-base font-bold mb-3">Rekomendasi</h2>
-        <div id="recommendationsList" class="flex flex-col gap-3"></div>
+      <div onclick="openModal('descModal')" class="cursor-pointer p-4 hover:bg-gray-100 dark:hover:bg-[#111] rounded-xl transition-colors">
+        <h1 id="videoTitle" class="text-lg font-bold leading-tight">Memuat...</h1>
+        <div id="videoMeta" class="text-xs text-gray-400 mt-1">Memuat data...</div>
       </div>
+
+      <div onclick="openModal('commentModal')" class="p-4 bg-gray-100 dark:bg-[#181818] rounded-xl cursor-pointer hover:bg-gray-200 dark:hover:bg-[#222]">
+        <div class="text-xs font-bold mb-2">Komentar</div>
+        <div id="previewCommentText" class="text-xs text-gray-500">Klik untuk melihat...</div>
+      </div>
+    </div>
+
+    <!-- Kolom Kanan: Rekomendasi (Desktop Sidebar) -->
+    <div class="hidden lg:block lg:col-span-1">
+      <h2 class="text-base font-bold mb-4">Rekomendasi</h2>
+      <div id="recommendationsList" class="flex flex-col gap-3"></div>
     </div>
   </main>
 
-  <!-- Modal Template -->
-  <div id="descModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+  <!-- Modal Deskripsi (Bottom Sheet) -->
+  <div id="descModal" class="fixed inset-0 z-50 hidden">
     <div class="absolute inset-0 bg-black/60" onclick="history.back()"></div>
-    <div class="relative w-full max-w-lg bg-white dark:bg-[#0f0f0f] rounded-2xl p-6 max-h-[80vh] overflow-y-auto">
+    <div class="sheet-transition hidden-sheet absolute bottom-0 w-full h-[85vh] bg-white dark:bg-[#0f0f0f] rounded-t-2xl p-6 overflow-y-auto">
       <button onclick="history.back()" class="absolute top-4 right-4 text-xl font-bold">✕</button>
       <h2 class="text-lg font-bold mb-4">Deskripsi</h2>
-      <p id="videoDescription" class="text-sm text-gray-700 dark:text-gray-300"></p>
+      
+      <!-- Statistik -->
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="bg-gray-100 dark:bg-[#1a1a1a] p-4 rounded-xl text-center">
+          <div id="statViews" class="font-bold text-lg">0</div>
+          <div class="text-[10px] text-gray-500">Ditonton</div>
+        </div>
+        <div class="bg-gray-100 dark:bg-[#1a1a1a] p-4 rounded-xl text-center">
+          <div id="statDate" class="font-bold text-lg">-</div>
+          <div class="text-[10px] text-gray-500">Tanggal</div>
+        </div>
+      </div>
+      
+      <p id="videoDescription" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed"></p>
     </div>
   </div>
 
-  <div id="commentModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+  <!-- Modal Komentar (Bottom Sheet) -->
+  <div id="commentModal" class="fixed inset-0 z-50 hidden">
     <div class="absolute inset-0 bg-black/60" onclick="history.back()"></div>
-    <div class="relative w-full max-w-lg bg-white dark:bg-[#0f0f0f] rounded-2xl flex flex-col max-h-[80vh] overflow-hidden">
-      <div class="px-4 py-3 border-b border-gray-200 dark:border-[#222] flex justify-between items-center">
+    <div class="sheet-transition hidden-sheet absolute bottom-0 w-full h-[85vh] bg-white dark:bg-[#0f0f0f] rounded-t-2xl flex flex-col overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-[#222] flex justify-between items-center">
         <h2 class="font-bold">Komentar</h2>
         <button onclick="history.back()" class="text-xl">✕</button>
       </div>
-      <div id="commentsList" class="flex-grow overflow-y-auto p-4"></div>
-      <form id="commentForm" onsubmit="submitComment(event)" class="p-3 border-t dark:border-[#222]">
-        <input type="text" id="commentContent" placeholder="Tulis komentar..." class="w-full bg-gray-100 dark:bg-[#1a1a1a] rounded-full px-4 py-2 text-xs outline-none">
+      <div id="commentsList" class="flex-grow overflow-y-auto p-4 space-y-3"></div>
+      <form id="commentForm" onsubmit="submitComment(event)" class="p-4 border-t dark:border-[#222]">
+        <input type="text" id="commentContent" placeholder="Tulis komentar..." class="w-full bg-gray-100 dark:bg-[#1a1a1a] rounded-full px-4 py-3 text-sm outline-none">
       </form>
     </div>
   </div>
@@ -87,26 +101,22 @@
     const CUSDIS_APP_ID = "3b6b52be-1199-4fa2-bfb6-079f492bebe9";
     const urlParams = new URLSearchParams(window.location.search);
     const currentCode = urlParams.get('code');
-    let isModalOpen = false;
+    let activeModal = null;
 
-    // Navigasi Modal Hijack (Back Button)
-    window.onpopstate = function(event) {
-      if(isModalOpen) {
-        closeModal('descModal');
-        closeModal('commentModal');
-        isModalOpen = false;
-      }
-    };
+    // Handle Back Button untuk menutup modal
+    window.onpopstate = () => { closeModal(); };
 
     function openModal(id) {
-      document.getElementById(id).classList.remove('hidden');
+      activeModal = document.getElementById(id);
+      activeModal.classList.remove('hidden');
+      setTimeout(() => { activeModal.querySelector('.sheet-transition').classList.add('show-sheet'); }, 10);
       window.history.pushState({modal: id}, '');
-      isModalOpen = true;
     }
 
-    function closeModal(id) {
-      document.getElementById(id).classList.add('hidden');
-      isModalOpen = false;
+    function closeModal() {
+      if (!activeModal) return;
+      activeModal.querySelector('.sheet-transition').classList.remove('show-sheet');
+      setTimeout(() => { activeModal.classList.add('hidden'); activeModal = null; }, 300);
     }
 
     function toggleTheme() {
@@ -122,56 +132,54 @@
       if(currentVideo) {
         document.getElementById('videoTitle').innerText = currentVideo.title;
         document.getElementById('doodPlayer').src = `https://dood.so/e/${currentVideo.dood_code}`;
-        document.getElementById('videoDescription').innerText = currentVideo.description || "Tidak ada deskripsi.";
+        document.getElementById('videoDescription').innerText = currentVideo.description || "-";
         
-        // Fetch Main Views
+        // Fetch Main Stats
         fetch(`https://api.countapi.xyz/hit/replay_jkt48_catalog_v1/${currentCode}`)
-            .then(r => r.json())
-            .then(d => document.getElementById('videoMeta').innerText = `${(d.value || 0).toLocaleString()} x ditonton`);
+          .then(r => r.json())
+          .then(d => {
+            const v = (d.value || 0).toLocaleString();
+            document.getElementById('videoMeta').innerText = v + " x ditonton";
+            document.getElementById('statViews').innerText = v;
+          });
+        
+        const dStr = currentVideo.date || `${currentVideo.day || ''} ${currentVideo.month || ''}`.trim();
+        document.getElementById('statDate').innerText = dStr || "-";
 
-        // Render Recommendations
+        // Render Sidebar Rekomendasi
         const recList = document.getElementById('recommendationsList');
         recList.innerHTML = '';
-        videos.filter(v => v.dood_code !== currentCode).slice(0, 8).forEach(v => {
-          const dateStr = v.date || `${v.day || ''} ${v.month || ''} ${v.year || ''}`.trim();
-          const item = document.createElement('a');
-          item.href = `watch.html?code=${v.dood_code}`;
-          item.className = "flex gap-3 p-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-[#111]";
-          item.innerHTML = `
-            <img src="${v.thumb}" class="w-32 aspect-video rounded-lg object-cover bg-gray-800">
-            <div class="flex flex-col justify-center min-w-0">
-              <h3 class="font-semibold text-xs line-clamp-2">${v.title}</h3>
-              <p class="text-[10px] text-gray-500">${dateStr}</p>
-              <p class="text-[10px] text-gray-500" id="v-${v.dood_code}">Memuat views...</p>
-            </div>
+        videos.filter(v => v.dood_code !== currentCode).slice(0, 6).forEach(v => {
+          recList.innerHTML += `
+            <a href="watch.html?code=${v.dood_code}" class="flex gap-3 hover:bg-gray-100 dark:hover:bg-[#111] p-2 rounded-lg transition-colors">
+              <img src="${v.thumb}" class="w-32 aspect-video rounded-md object-cover bg-gray-800">
+              <div class="flex flex-col justify-center">
+                <h3 class="text-xs font-semibold line-clamp-2">${v.title}</h3>
+                <p class="text-[10px] text-gray-500">Video Rekomendasi</p>
+              </div>
+            </a>
           `;
-          recList.appendChild(item);
-          fetch(`https://api.countapi.xyz/get/replay_jkt48_catalog_v1/${v.dood_code}`)
-            .then(r => r.json())
-            .then(d => document.getElementById(`v-${v.dood_code}`).innerText = `${(d.value || 0).toLocaleString()} x ditonton`);
         });
       }
       fetchComments();
     }
 
     async function fetchComments() {
-      if(!currentCode) return;
       try {
         const res = await fetch(`https://cusdis.com/api/open/comments?appId=${CUSDIS_APP_ID}&pageId=${currentCode}`);
         const data = await res.json();
-        const listEl = document.getElementById('commentsList');
+        const list = document.getElementById('commentsList');
+        
         if(data.data.list.length > 0) {
           document.getElementById('previewCommentText').innerText = data.data.list[0].content;
-          listEl.innerHTML = data.data.list.map(c => `
-            <div class="mb-4"><div class="font-bold text-xs">${c.nickname}</div><div class="text-sm">${c.content}</div></div>
+          list.innerHTML = data.data.list.map((c, i) => `
+            <div class="p-3 rounded-xl ${i % 2 === 0 ? 'bg-gray-100 dark:bg-[#1a1a1a]' : 'bg-gray-200 dark:bg-[#222]'}">
+              <div class="font-bold text-[10px] opacity-70">${c.nickname}</div>
+              <div class="text-xs">${c.content}</div>
+            </div>
           `).join('');
         }
       } catch(e) {}
-    }
-
-    async function submitComment(e) {
-      e.preventDefault();
-      // Tambahkan logika kirim komentar di sini
     }
 
     init();
