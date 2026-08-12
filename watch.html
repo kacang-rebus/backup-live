@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nonton Replay JKT48</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Konfigurasi Dark Mode Tailwind -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
+  <!-- Skrip Inisialisasi Tema (Membaca LocalStorage saat halaman pertama dimuat) -->
+  <script>
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
   <style>
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
@@ -22,6 +36,7 @@
         <span class="bg-[#a88a55] text-black font-bold px-2 py-0.5 rounded text-sm tracking-wider">REPLAY</span>
         <span class="text-black dark:text-white font-bold text-lg ml-2 tracking-wide">JKT48</span>
       </a>
+      <!-- Tombol Switcher Mode Gelap / Terang -->
       <button onclick="toggleTheme()" class="bg-transparent p-2 text-xl hover:opacity-80 transition-opacity">
         <span class="dark:hidden">🌙</span>
         <span class="hidden dark:inline">☀️</span>
@@ -131,9 +146,15 @@
       setTimeout(() => { activeModal.classList.add('hidden'); activeModal = null; }, 300);
     }
 
+    // Fungsi Pengalih Tema Gelap/Terang
     function toggleTheme() {
-      document.documentElement.classList.toggle('dark');
-      localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.theme = 'light';
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.theme = 'dark';
+      }
     }
 
     async function init() {
@@ -147,7 +168,7 @@
           document.getElementById('doodPlayer').src = `https://dood.so/e/${currentVideo.dood_code}`;
           document.getElementById('videoDescription').innerText = currentVideo.description || "Tidak ada deskripsi.";
           
-          // Penggabungan Tanggal & Tahun Lengkap
+          // Memastikan Tahun Ditampilkan Lengkap
           const fullDate = currentVideo.date || `${currentVideo.day || ''} ${currentVideo.month || ''} ${currentVideo.year || ''}`.trim();
           document.getElementById('statDate').innerText = fullDate || "-";
 
@@ -162,7 +183,7 @@
               document.getElementById('videoMeta').innerText = "Belum ada penayangan";
             });
 
-          // Render Rekomendasi
+          // Render Rekomendasi Video
           const recList = document.getElementById('recommendationsList');
           recList.innerHTML = '';
           videos.filter(v => v.dood_code !== currentCode).slice(0, 8).forEach(v => {
