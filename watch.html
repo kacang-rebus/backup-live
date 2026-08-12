@@ -13,283 +13,175 @@
     }
     tailwind.config = { darkMode: 'class' }
   </script>
-  <style>
-    * {
-      -webkit-tap-highlight-color: transparent;
-    }
-    @media (hover: hover) {
-      .rec-card:hover {
-        background-color: rgba(0, 0, 0, 0.05);
-      }
-      .dark .rec-card:hover {
-        background-color: #181818;
-      }
-    }
-  </style>
 </head>
-<body class="bg-white dark:bg-black text-black dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-300">
+<body class="bg-white dark:bg-black text-black dark:text-gray-100 min-h-screen flex flex-col font-sans">
 
-  <!-- Navbar -->
-  <header class="bg-white dark:bg-black border-b border-gray-200 dark:border-[#404751] sticky top-0 z-40 transition-colors duration-300">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2 text-sm font-semibold hover:text-[#896f3d] transition">
-        <span>←</span> Kembali
-      </a>
-      
-      <a href="index.html" class="text-lg font-bold tracking-wide uppercase flex items-center gap-2">
-        <span class="bg-[#896f3d] text-white dark:text-black px-2 py-0.5 rounded text-xs font-semibold">REPLAY</span> JKT48
-      </a>
+  <!-- Player Area -->
+  <div class="sticky top-0 z-40 bg-black w-full" style="padding-top: 56.25%;">
+    <iframe id="doodPlayer" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+  </div>
 
-      <button id="themeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 transition" aria-label="Ganti Tema">
-        <svg id="sunIcon" class="hidden w-5 h-5 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        <svg id="moonIcon" class="block w-5 h-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-    </div>
-  </header>
-
-  <!-- Content Layout -->
-  <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <!-- Main Content -->
+  <main class="max-w-2xl mx-auto pb-10">
     
-    <!-- Area Pemutar Video Utama & Deskripsi -->
-    <div class="lg:col-span-2 flex flex-col gap-5">
-      
-      <!-- Frame Video -->
-      <div class="relative w-full overflow-hidden rounded-xl bg-black border border-gray-300 dark:border-[#404751] shadow-2xl" style="padding-top: 56.25%;">
-        <iframe id="doodPlayer" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+    <!-- Title & Views Area (Trigger Desc Modal) -->
+    <div onclick="openModal('descModal')" class="cursor-pointer px-4 pt-4 pb-2">
+      <h1 id="videoTitle" class="text-base font-bold leading-tight line-clamp-2">Memuat...</h1>
+      <div class="flex justify-between items-center mt-1 text-xs text-gray-500 dark:text-gray-400">
+        <span id="videoMeta">Memuat data...</span>
+        <span class="text-gray-400">▼</span>
       </div>
-      
-      <!-- Detail Video -->
-      <div>
-        <span id="videoCategory" class="text-xs font-semibold text-[#896f3d] uppercase tracking-wider block mb-1"></span>
-
-        <div onclick="toggleDescription()" class="cursor-pointer rounded-xl bg-gray-100 dark:bg-[#181818] p-3.5 border border-transparent hover:border-gray-300 dark:hover:border-[#333] transition-all select-none">
-          <div class="flex items-start justify-between gap-3">
-            <h1 id="videoTitle" class="text-base sm:text-lg font-bold text-black dark:text-white leading-snug">Memuat Judul...</h1>
-            <span id="descArrow" class="text-xs text-gray-400 mt-1 transition-transform duration-300 flex-shrink-0">▼</span>
-          </div>
-          <p id="videoMeta" class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium"></p>
-
-          <div id="descContent" class="hidden mt-3 pt-3 border-t border-gray-200 dark:border-[#2f2f2f] text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
-            <p id="videoDescription">Memuat deskripsi...</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- AREA KOLOM KOMENTAR CUSDIS -->
-      <div class="rounded-xl bg-gray-50 dark:bg-[#121212] p-4 border border-gray-200 dark:border-[#222]">
-        <h3 class="text-sm font-bold text-black dark:text-white mb-4 flex items-center gap-2">
-          <span>💬</span> Komentar
-        </h3>
-        
-        <!-- Element Embed Cusdis -->
-        <div id="cusdis_thread"
-          data-host="https://cusdis.com"
-          data-app-id="3b6b52be-1199-4fa2-bfb6-079f492bebe9"
-          data-page-id=""
-          data-page-url=""
-          data-page-title=""
-          data-theme="auto"
-        ></div>
-        <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
-      </div>
-
     </div>
 
-    <!-- Sidebar Rekomendasi Video -->
-    <div class="lg:col-span-1">
-      <h2 class="text-base font-bold mb-4 pb-2 border-b border-gray-200 dark:border-[#404751] flex items-center gap-2">
-        <span>🎬</span> Rekomendasi Video
-      </h2>
-      <div id="recommendationsList" class="flex flex-col gap-2"></div>
+    <!-- Comment Preview (Trigger Comment Modal) -->
+    <div onclick="openModal('commentModal')" class="mx-4 mt-2 px-4 py-3 bg-gray-100 dark:bg-[#1a1a1a] rounded-xl cursor-pointer hover:bg-gray-200 dark:hover:bg-[#252525] transition-colors">
+      <div class="text-xs font-bold mb-1">Komentar</div>
+      <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+        <div class="w-6 h-6 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+        <span>Komentar...</span>
+      </div>
     </div>
 
+    <!-- Recommendations -->
+    <div class="px-4 mt-6">
+      <h2 class="text-sm font-bold mb-3">Rekomendasi</h2>
+      <div id="recommendationsList" class="flex flex-col gap-3"></div>
+    </div>
   </main>
 
-  <footer class="bg-white dark:bg-black border-t border-gray-200 dark:border-[#404751] py-4 text-center text-xs text-gray-500 dark:text-gray-400">
-    &copy; 2026 Replay JKT48. Integrated with Doodstream.
-  </footer>
+  <!-- MODAL DESKRIPSI -->
+  <div id="descModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50" onclick="closeModal('descModal')"></div>
+    <div class="absolute bottom-0 w-full h-[80vh] bg-white dark:bg-[#0f0f0f] rounded-t-2xl p-4 overflow-y-auto">
+      <div class="w-12 h-1 bg-gray-400 rounded-full mx-auto mb-4"></div>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-bold">Deskripsi</h2>
+        <button onclick="closeModal('descModal')" class="font-bold text-xl">✕</button>
+      </div>
+      
+      <!-- Summary Boxes -->
+      <div class="grid grid-cols-2 gap-2 mb-4">
+        <div class="bg-gray-100 dark:bg-[#272727] p-3 rounded-lg text-center">
+          <div id="summaryViews" class="font-bold text-sm">0</div>
+          <div class="text-[10px] text-gray-500">Penayangan</div>
+        </div>
+        <div class="bg-gray-100 dark:bg-[#272727] p-3 rounded-lg text-center">
+          <div id="summaryDate" class="font-bold text-sm">-</div>
+          <div class="text-[10px] text-gray-500">Tanggal</div>
+        </div>
+      </div>
+      <p id="videoDescription" class="text-sm leading-relaxed whitespace-pre-line"></p>
+    </div>
+  </div>
+
+  <!-- MODAL KOMENTAR -->
+  <div id="commentModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50" onclick="closeModal('commentModal')"></div>
+    <div class="absolute bottom-0 w-full h-[90vh] bg-white dark:bg-[#0f0f0f] rounded-t-2xl flex flex-col">
+      <div class="p-4 border-b border-gray-200 dark:border-[#222] flex justify-between items-center">
+        <h2 class="font-bold">Komentar</h2>
+        <button onclick="closeModal('commentModal')" class="text-xl">✕</button>
+      </div>
+      <div id="commentsList" class="flex-grow overflow-y-auto p-4 space-y-4"></div>
+      
+      <!-- Input Area -->
+      <form id="commentForm" onsubmit="submitComment(event)" class="p-4 border-t border-gray-200 dark:border-[#222] bg-white dark:bg-[#0f0f0f]">
+        <div class="flex gap-2">
+          <input type="text" id="commentNickname" required class="flex-grow bg-gray-100 dark:bg-[#1a1a1a] rounded-lg px-3 py-2 text-xs" placeholder="Nama">
+          <button type="button" onclick="randomizeNickname()" class="px-2 bg-gray-200 dark:bg-[#222] rounded-lg text-xs">🎲</button>
+        </div>
+        <textarea id="commentContent" rows="2" class="w-full mt-2 bg-gray-100 dark:bg-[#1a1a1a] rounded-lg p-3 text-xs" placeholder="Tulis komentar..."></textarea>
+        <button type="submit" id="submitBtn" class="w-full mt-2 py-2 bg-blue-600 text-white font-bold rounded-lg text-xs">Kirim</button>
+      </form>
+    </div>
+  </div>
 
   <script>
-    // Theme Toggle Logic
-    const themeToggle = document.getElementById('themeToggle');
-    const sunIcon = document.getElementById('sunIcon');
-    const moonIcon = document.getElementById('moonIcon');
-
-    function updateIcons() {
-      const isDark = document.documentElement.classList.contains('dark');
-      if (isDark) {
-        sunIcon.classList.add('hidden');
-        moonIcon.classList.remove('hidden');
-      } else {
-        sunIcon.classList.remove('hidden');
-        moonIcon.classList.add('hidden');
-      }
-
-      // Update tema widget Cusdis jika sudah ter-load
-      const thread = document.getElementById('cusdis_thread');
-      if (thread) {
-        thread.setAttribute('data-theme', isDark ? 'dark' : 'light');
-        if (window.Cusdis && window.Cusdis.render) {
-          window.Cusdis.render(thread);
-        }
-      }
-    }
-    updateIcons();
-
-    themeToggle.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-      localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-      updateIcons();
-    });
-
-    // Toggle Deskripsi
-    function toggleDescription() {
-      const content = document.getElementById('descContent');
-      const arrow = document.getElementById('descArrow');
-
-      if (content.classList.contains('hidden')) {
-        content.classList.remove('hidden');
-        arrow.style.transform = 'rotate(180deg)';
-      } else {
-        content.classList.add('hidden');
-        arrow.style.transform = 'rotate(0deg)';
-      }
-    }
-
-    // View Count Global (CountAPI)
-    async function getGlobalViews(videoCode) {
-      const namespace = "replay_jkt48_catalog_v1";
-      const apiUrl = `https://api.countapi.xyz/hit/${namespace}/${videoCode}`;
-
-      try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error("API Offline");
-        const data = await response.json();
-        return data.value;
-      } catch (err) {
-        return null;
-      }
-    }
-
+    const CUSDIS_APP_ID = "3b6b52be-1199-4fa2-bfb6-079f492bebe9";
     const urlParams = new URLSearchParams(window.location.search);
     const currentCode = urlParams.get('code');
+    let currentVideoData = null;
 
-    async function initWatchPage() {
-      if (!currentCode) {
-        window.location.href = 'index.html';
-        return;
-      }
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-      try {
-        const response = await fetch('data.json');
-        const videos = await response.json();
+    // Init Logic
+    async function init() {
+      if(!currentCode) window.location.href = 'index.html';
+      const res = await fetch('data.json');
+      const videos = await res.json();
+      currentVideoData = videos.find(v => v.dood_code === currentCode);
+      
+      // Update UI
+      document.getElementById('videoTitle').innerText = currentVideoData.title;
+      document.getElementById('doodPlayer').src = `https://dood.so/e/${currentVideoData.dood_code}`;
+      
+      const dateStr = currentVideoData.date || "N/A";
+      document.getElementById('videoMeta').innerText = "Memuat view...";
+      document.getElementById('summaryDate').innerText = dateStr;
+      document.getElementById('videoDescription').innerText = currentVideoData.description || "Tidak ada deskripsi.";
 
-        const currentVideo = videos.find(v => v.dood_code === currentCode);
+      // Load Views
+      fetch(`https://api.countapi.xyz/hit/replay_jkt48_catalog_v1/${currentCode}`)
+        .then(r => r.json()).then(d => {
+          document.getElementById('videoMeta').innerText = `${d.value.toLocaleString()} x ditonton`;
+          document.getElementById('summaryViews').innerText = d.value.toLocaleString();
+        });
 
-        if (!currentVideo) {
-          document.getElementById('videoTitle').innerText = "Video tidak ditemukan.";
-          return;
-        }
-
-        document.title = `${currentVideo.title} - Replay JKT48`;
-        document.getElementById('doodPlayer').src = `https://dood.so/e/${currentVideo.dood_code}`;
-        document.getElementById('videoTitle').innerText = currentVideo.title;
-        document.getElementById('videoCategory').innerText = currentVideo.category;
-
-        let formattedDate = currentVideo.date || `${currentVideo.day || ''} ${currentVideo.month || ''} ${currentVideo.year || ''}`.trim();
-        formattedDate = formattedDate || "Tanggal tidak tersedia";
-        document.getElementById('videoMeta').innerText = `${formattedDate} • 👁️ Memuat penonton...`;
-
-        const defaultDesc = `Saksikan siaran ulang (replay) ${currentVideo.title}.\n\nNikmati penampilan terbaik member JKT48 pada pertunjukan ini. Selalu dukung terus JKT48!`;
-        document.getElementById('videoDescription').innerText = currentVideo.description || defaultDesc;
-
-        // BIND DATA VIDEO KE WIDGET CUSDIS
-        setupCusdis(currentVideo);
-
-        // Render Kartu Rekomendasi
-        renderRecommendations(videos, currentVideo);
-
-        // Load Views
-        const totalViews = await getGlobalViews(currentVideo.dood_code);
-        if (totalViews !== null) {
-          document.getElementById('videoMeta').innerText = `${formattedDate} • 👁️ ${totalViews.toLocaleString('id-ID')} x ditonton`;
-        } else {
-          document.getElementById('videoMeta').innerText = formattedDate;
-        }
-
-      } catch (err) {
-        console.error("Gagal memuat data video:", err);
-      }
+      randomizeNickname();
+      renderRecs(videos, currentVideoData);
+      fetchComments(currentCode);
     }
 
-    // FUNGSI MENGISI PARAMETER CUSDIS SECARA DINAMIS
-    function setupCusdis(video) {
-      const thread = document.getElementById('cusdis_thread');
-      if (thread) {
-        thread.setAttribute('data-page-id', video.dood_code);
-        thread.setAttribute('data-page-url', window.location.href);
-        thread.setAttribute('data-page-title', video.title);
-        
-        const isDark = document.documentElement.classList.contains('dark');
-        thread.setAttribute('data-theme', isDark ? 'dark' : 'light');
-
-        if (window.Cusdis && window.Cusdis.render) {
-          window.Cusdis.render(thread);
-        }
-      }
+    // Comment Logic
+    function randomizeNickname() {
+      const names = ['Wota', 'Fans', 'Penonton', 'Oshi', 'Wota48'];
+      document.getElementById('commentNickname').value = names[Math.floor(Math.random()*names.length)] + '_' + Math.floor(Math.random()*9000);
     }
 
-    function renderRecommendations(allVideos, currentVideo) {
-      const container = document.getElementById('recommendationsList');
-      container.innerHTML = '';
+    async function fetchComments(code) {
+      const res = await fetch(`https://cusdis.com/api/open/comments?appId=${CUSDIS_APP_ID}&pageId=${code}`);
+      const data = await res.json();
+      const list = document.getElementById('commentsList');
+      list.innerHTML = data.data.list.map(c => `
+        <div class="text-xs">
+          <span class="font-bold text-[#896f3d]">${c.nickname}</span>
+          <p class="text-gray-300 mt-1">${c.content}</p>
+        </div>
+      `).join('');
+    }
 
-      let otherVideos = allVideos.filter(v => v.dood_code !== currentVideo.dood_code);
-
-      otherVideos.sort((a, b) => {
-        if (a.category === currentVideo.category && b.category !== currentVideo.category) return -1;
-        if (a.category !== currentVideo.category && b.category === currentVideo.category) return 1;
-        return 0;
+    async function submitComment(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      await fetch('https://cusdis.com/api/open/comment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          appId: CUSDIS_APP_ID, pageId: currentCode,
+          nickname: document.getElementById('commentNickname').value,
+          content: document.getElementById('commentContent').value
+        })
       });
+      document.getElementById('commentContent').value = '';
+      btn.disabled = false;
+      fetchComments(currentCode);
+    }
 
-      if (otherVideos.length === 0) {
-        container.innerHTML = `<p class="text-xs text-gray-500">Belum ada rekomendasi video lain.</p>`;
-        return;
-      }
-
-      otherVideos.forEach(v => {
-        const card = document.createElement('div');
-        card.className = "rec-card flex gap-3 cursor-pointer p-2 rounded-xl transition-colors select-none";
-        
-        // FUNGSI HIGHLIGHT
-        const addHighlight = () => card.classList.add('bg-gray-100', 'dark:bg-[#181818]');
-        const removeHighlight = () => card.classList.remove('bg-gray-100', 'dark:bg-[#181818]');
-
-        // EVENT TOUCH:
-        // touchstart : Menyalakan highlight saat jari pertama kali menempel
-        // touchend & touchcancel : Mengatur kartu agar baru mati ketika jari benar-benar diangkat dari layar
-        // (Event touchmove sengaja dilepas agar highlight tetap aktif walaupun layar di-scroll saat jari menempel)
-        card.addEventListener('touchstart', addHighlight, { passive: true });
-        card.addEventListener('touchend', removeHighlight, { passive: true });
-        card.addEventListener('touchcancel', removeHighlight, { passive: true });
-
-        card.onclick = () => {
-          window.location.href = `watch.html?code=${v.dood_code}`;
-        };
-
-        card.innerHTML = `
-          <div class="relative w-32 aspect-video bg-gray-200 dark:bg-black rounded-lg overflow-hidden flex-shrink-0">
-            <img src="${v.thumb}" class="w-full h-full object-cover">
-          </div>
-          <div class="flex flex-col justify-center min-w-0">
-            <span class="text-[10px] text-[#896f3d] font-semibold block uppercase tracking-wide">${v.category}</span>
-            <h3 class="text-xs font-semibold text-black dark:text-white line-clamp-2 leading-snug mt-0.5">${v.title}</h3>
-          </div>
-        `;
-        container.appendChild(card);
+    function renderRecs(all, current) {
+      const list = document.getElementById('recommendationsList');
+      all.filter(v => v.dood_code !== current.dood_code).slice(0,5).forEach(v => {
+        const div = document.createElement('div');
+        div.className = "flex gap-2 cursor-pointer";
+        div.onclick = () => window.location.href = `watch.html?code=${v.dood_code}`;
+        div.innerHTML = `<img src="${v.thumb}" class="w-32 aspect-video rounded-lg object-cover">
+                         <div class="text-xs font-semibold line-clamp-2">${v.title}</div>`;
+        list.appendChild(div);
       });
     }
 
-    initWatchPage();
+    init();
   </script>
 </body>
 </html>
