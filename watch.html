@@ -19,7 +19,7 @@
   <!-- Header Navigasi -->
   <header class="sticky top-0 z-40 bg-white/95 dark:bg-black/90 backdrop-blur border-b border-gray-200 dark:border-[#222] px-4 py-3">
     <div class="max-w-5xl mx-auto flex items-center justify-between">
-      <!-- Logo Style Baru -->
+      <!-- Logo Style REPLAY JKT48 -->
       <a href="index.html" class="flex items-center">
         <span class="bg-[#a88a55] text-black font-bold px-2 py-0.5 rounded text-sm tracking-wider">REPLAY</span>
         <span class="text-black dark:text-white font-bold text-lg ml-2 tracking-wide">JKT48</span>
@@ -33,7 +33,7 @@
     </div>
   </header>
 
-  <!-- Main Content Layout -->
+  <!-- Main Content -->
   <main class="max-w-5xl mx-auto w-full p-0 sm:p-4 lg:p-6 pb-10">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
@@ -67,7 +67,6 @@
         <h2 class="text-sm font-bold mb-3">Rekomendasi</h2>
         <div id="recommendationsList" class="flex flex-col gap-3"></div>
       </div>
-
     </div>
   </main>
 
@@ -85,7 +84,6 @@
   <div id="commentModal" class="fixed inset-0 z-50 hidden">
     <div class="absolute inset-0 bg-black/60" onclick="closeModal('commentModal')"></div>
     <div class="absolute bottom-0 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:left-1/2 sm:-translate-x-1/2 w-full sm:max-w-lg h-[85vh] sm:h-[650px] bg-white dark:bg-[#0f0f0f] rounded-t-2xl sm:rounded-2xl flex flex-col">
-      <div class="w-12 h-1 bg-gray-400 dark:bg-gray-600 rounded-full mx-auto mt-2 sm:hidden"></div>
       <div class="px-4 py-3 border-b border-gray-200 dark:border-[#222] flex justify-between items-center">
         <h2 class="font-bold text-base">Komentar</h2>
         <button onclick="closeModal('commentModal')" class="text-xl p-1">✕</button>
@@ -95,20 +93,19 @@
         <input type="text" id="commentNickname" placeholder="Nama" class="bg-gray-100 dark:bg-[#1a1a1a] rounded-lg px-3 py-1.5 text-xs outline-none">
         <div class="flex gap-2">
           <input type="text" id="commentContent" placeholder="Komentar..." class="flex-grow bg-gray-100 dark:bg-[#1a1a1a] rounded-full px-4 py-2 text-xs outline-none">
-          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-full text-xs font-bold">Kirim</button>
+          <button type="submit" id="submitBtn" class="bg-blue-600 text-white px-4 py-2 rounded-full text-xs font-bold">Kirim</button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
-    // ... (Script logika JS sama seperti sebelumnya, pastikan CUSDIS_APP_ID dan fungsi fetch tetap ada)
     const CUSDIS_APP_ID = "3b6b52be-1199-4fa2-bfb6-079f492bebe9";
     const urlParams = new URLSearchParams(window.location.search);
     const currentCode = urlParams.get('code');
     
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('hidden'); }
     
     function toggleTheme() {
       document.documentElement.classList.toggle('dark');
@@ -118,14 +115,71 @@
     async function init() {
       const res = await fetch('data.json');
       const videos = await res.json();
-      const currentVideoData = videos.find(v => v.dood_code === currentCode);
-      if(currentVideoData) {
-        document.getElementById('videoTitle').innerText = currentVideoData.title;
-        document.getElementById('doodPlayer').src = `https://dood.so/e/${currentVideoData.dood_code}`;
-        document.getElementById('videoDescription').innerText = currentVideoData.description;
+      const currentVideo = videos.find(v => v.dood_code === currentCode);
+      
+      if(currentVideo) {
+        document.getElementById('videoTitle').innerText = currentVideo.title;
+        document.getElementById('doodPlayer').src = `https://dood.so/e/${currentVideo.dood_code}`;
+        document.getElementById('videoDescription').innerText = currentVideo.description || "Tidak ada deskripsi.";
+        
+        // Render Rekomendasi
+        const recList = document.getElementById('recommendationsList');
+        recList.innerHTML = '';
+        videos.filter(v => v.dood_code !== currentCode).slice(0, 6).forEach(v => {
+          recList.innerHTML += `
+            <a href="watch.html?code=${v.dood_code}" class="flex gap-3 items-start p-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-[#111]">
+              <img src="${v.thumb}" class="w-32 aspect-video rounded-lg object-cover">
+              <div class="flex flex-col text-xs">
+                <h3 class="font-semibold line-clamp-2">${v.title}</h3>
+              </div>
+            </a>
+          `;
+        });
       }
-      // Tambahkan logic render lainnya...
+      fetchComments();
     }
+
+    async function fetchComments() {
+      if(!currentCode) return;
+      try {
+        const res = await fetch(`https://cusdis.com/api/open/comments?appId=${CUSDIS_APP_ID}&pageId=${currentCode}`);
+        const data = await res.json();
+        const listEl = document.getElementById('commentsList');
+        const previewEl = document.getElementById('previewCommentText');
+        
+        if(data.data.list.length > 0) {
+          previewEl.innerText = `${data.data.list[0].nickname}: ${data.data.list[0].content}`;
+          listEl.innerHTML = data.data.list.map(c => `
+            <div class="mb-4">
+              <div class="font-bold text-xs">${c.nickname}</div>
+              <div class="text-sm">${c.content}</div>
+            </div>
+          `).join('');
+        }
+      } catch(e) {}
+    }
+
+    async function submitComment(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.innerText = 'Mengirim...';
+      try {
+        await fetch('https://cusdis.com/api/open/comment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            appId: CUSDIS_APP_ID, 
+            pageId: currentCode,
+            nickname: document.getElementById('commentNickname').value || 'Anonim',
+            content: document.getElementById('commentContent').value
+          })
+        });
+        document.getElementById('commentContent').value = '';
+        fetchComments();
+      } catch(err) { alert("Gagal"); }
+      btn.innerText = 'Kirim';
+    }
+
     init();
   </script>
 </body>
