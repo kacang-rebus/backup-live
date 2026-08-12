@@ -16,33 +16,47 @@
 </head>
 <body class="bg-white dark:bg-black text-black dark:text-gray-100 min-h-screen flex flex-col font-sans">
 
+  <!-- Header Navigasi Atas -->
+  <header class="sticky top-0 z-40 bg-white dark:bg-black border-b border-gray-200 dark:border-[#222] px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="index.html" class="p-1 text-lg font-bold hover:opacity-80">←</a>
+      <span class="font-bold text-sm tracking-wide">Replay JKT48</span>
+    </div>
+    <button onclick="toggleTheme()" class="p-1.5 text-xs bg-gray-100 dark:bg-[#1a1a1a] rounded-full">
+      <span class="dark:hidden">🌙</span>
+      <span class="hidden dark:inline">☀️</span>
+    </button>
+  </header>
+
   <!-- Player Area -->
-  <div class="sticky top-0 z-40 bg-black w-full" style="padding-top: 56.25%;">
+  <div class="bg-black w-full relative" style="padding-top: 56.25%;">
     <iframe id="doodPlayer" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
   </div>
 
   <!-- Main Content -->
-  <main class="max-w-2xl mx-auto pb-10">
+  <main class="max-w-2xl mx-auto w-full pb-10">
     
     <!-- Title & Views Area (Trigger Desc Modal) -->
-    <div onclick="openModal('descModal')" class="cursor-pointer px-4 pt-4 pb-2">
+    <div onclick="openModal('descModal')" class="cursor-pointer px-4 pt-4 pb-2 hover:bg-gray-50 dark:hover:bg-[#111] transition-colors">
       <h1 id="videoTitle" class="text-base font-bold leading-tight line-clamp-2">Memuat...</h1>
       <div class="flex justify-between items-center mt-1 text-xs text-gray-500 dark:text-gray-400">
         <span id="videoMeta">Memuat data...</span>
-        <span class="text-gray-400">▼</span>
+        <span class="text-gray-400 text-[10px]">▼</span>
       </div>
     </div>
 
-    <!-- Comment Preview (Trigger Comment Modal) -->
-    <div onclick="openModal('commentModal')" class="mx-4 mt-2 px-4 py-3 bg-gray-100 dark:bg-[#1a1a1a] rounded-xl cursor-pointer hover:bg-gray-200 dark:hover:bg-[#252525] transition-colors">
-      <div class="text-xs font-bold mb-1">Komentar</div>
-      <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-        <div class="w-6 h-6 rounded-full bg-gray-300 dark:bg-gray-700"></div>
-        <span>Komentar...</span>
+    <!-- Comment Preview Box (Tanpa Dot • o) -->
+    <div onclick="openModal('commentModal')" class="mx-4 mt-3 px-4 py-3 bg-gray-100 dark:bg-[#181818] rounded-2xl cursor-pointer hover:bg-gray-200 dark:hover:bg-[#222] transition-colors">
+      <div class="text-xs font-bold mb-2 text-gray-900 dark:text-gray-100">Komentar</div>
+      
+      <!-- Input Style Capsule Preview -->
+      <div class="flex items-center gap-3 bg-gray-200/60 dark:bg-[#282828] px-3 py-2 rounded-full">
+        <div class="w-5 h-5 rounded-full bg-gray-400 dark:bg-gray-600 flex-shrink-0 flex items-center justify-center text-[10px] text-white">👤</div>
+        <span id="previewCommentText" class="text-xs text-gray-500 dark:text-gray-400 truncate">Komentar...</span>
       </div>
     </div>
 
-    <!-- Recommendations -->
+    <!-- Recommendations Section -->
     <div class="px-4 mt-6">
       <h2 class="text-sm font-bold mb-3">Rekomendasi</h2>
       <div id="recommendationsList" class="flex flex-col gap-3"></div>
@@ -51,47 +65,67 @@
 
   <!-- MODAL DESKRIPSI -->
   <div id="descModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/50" onclick="closeModal('descModal')"></div>
+    <div class="absolute inset-0 bg-black/60" onclick="closeModal('descModal')"></div>
     <div class="absolute bottom-0 w-full h-[80vh] bg-white dark:bg-[#0f0f0f] rounded-t-2xl p-4 overflow-y-auto">
-      <div class="w-12 h-1 bg-gray-400 rounded-full mx-auto mb-4"></div>
+      <div class="w-12 h-1 bg-gray-400 dark:bg-gray-600 rounded-full mx-auto mb-4"></div>
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-bold">Deskripsi</h2>
-        <button onclick="closeModal('descModal')" class="font-bold text-xl">✕</button>
+        <button onclick="closeModal('descModal')" class="font-bold text-xl p-1">✕</button>
       </div>
       
-      <!-- Summary Boxes -->
       <div class="grid grid-cols-2 gap-2 mb-4">
         <div class="bg-gray-100 dark:bg-[#272727] p-3 rounded-lg text-center">
           <div id="summaryViews" class="font-bold text-sm">0</div>
-          <div class="text-[10px] text-gray-500">Penayangan</div>
+          <div class="text-[10px] text-gray-500 dark:text-gray-400">Penayangan</div>
         </div>
         <div class="bg-gray-100 dark:bg-[#272727] p-3 rounded-lg text-center">
           <div id="summaryDate" class="font-bold text-sm">-</div>
-          <div class="text-[10px] text-gray-500">Tanggal</div>
+          <div class="text-[10px] text-gray-500 dark:text-gray-400">Tanggal</div>
         </div>
       </div>
-      <p id="videoDescription" class="text-sm leading-relaxed whitespace-pre-line"></p>
+      <p id="videoDescription" class="text-sm leading-relaxed whitespace-pre-line text-gray-700 dark:text-gray-300"></p>
     </div>
   </div>
 
-  <!-- MODAL KOMENTAR -->
+  <!-- MODAL KOMENTAR (Bottom Sheet UI) -->
   <div id="commentModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/50" onclick="closeModal('commentModal')"></div>
-    <div class="absolute bottom-0 w-full h-[90vh] bg-white dark:bg-[#0f0f0f] rounded-t-2xl flex flex-col">
-      <div class="p-4 border-b border-gray-200 dark:border-[#222] flex justify-between items-center">
-        <h2 class="font-bold">Komentar</h2>
-        <button onclick="closeModal('commentModal')" class="text-xl">✕</button>
-      </div>
-      <div id="commentsList" class="flex-grow overflow-y-auto p-4 space-y-4"></div>
+    <div class="absolute inset-0 bg-black/60" onclick="closeModal('commentModal')"></div>
+    <div class="absolute bottom-0 w-full h-[85vh] bg-white dark:bg-[#0f0f0f] rounded-t-2xl flex flex-col">
       
-      <!-- Input Area -->
-      <form id="commentForm" onsubmit="submitComment(event)" class="p-4 border-t border-gray-200 dark:border-[#222] bg-white dark:bg-[#0f0f0f]">
-        <div class="flex gap-2">
-          <input type="text" id="commentNickname" required class="flex-grow bg-gray-100 dark:bg-[#1a1a1a] rounded-lg px-3 py-2 text-xs" placeholder="Nama">
-          <button type="button" onclick="randomizeNickname()" class="px-2 bg-gray-200 dark:bg-[#222] rounded-lg text-xs">🎲</button>
+      <!-- Drag Handle -->
+      <div class="w-12 h-1 bg-gray-400 dark:bg-gray-600 rounded-full mx-auto mt-2"></div>
+      
+      <!-- Header Modal Komentar -->
+      <div class="px-4 py-3 border-b border-gray-200 dark:border-[#222] flex justify-between items-center">
+        <h2 class="font-bold text-base">Komentar</h2>
+        <div class="flex items-center gap-3">
+          <button class="w-6 h-6 rounded-full border border-gray-400 dark:border-gray-500 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400 font-serif italic">i</button>
+          <button onclick="closeModal('commentModal')" class="text-xl font-bold p-1">✕</button>
         </div>
-        <textarea id="commentContent" rows="2" class="w-full mt-2 bg-gray-100 dark:bg-[#1a1a1a] rounded-lg p-3 text-xs" placeholder="Tulis komentar..."></textarea>
-        <button type="submit" id="submitBtn" class="w-full mt-2 py-2 bg-blue-600 text-white font-bold rounded-lg text-xs">Kirim</button>
+      </div>
+
+      <!-- Filter Tabs (Teratas / Terbaru) -->
+      <div class="px-4 py-3 flex gap-2 border-b border-gray-100 dark:border-[#1a1a1a]">
+        <button id="tabTop" onclick="switchTab('top')" class="px-3 py-1 bg-gray-900 text-white dark:bg-white dark:text-black rounded-lg text-xs font-semibold">Teratas</button>
+        <button id="tabNew" onclick="switchTab('new')" class="px-3 py-1 bg-gray-200 text-gray-700 dark:bg-[#252525] dark:text-gray-300 rounded-lg text-xs font-semibold">Terbaru</button>
+      </div>
+
+      <!-- List Komentar & Empty State -->
+      <div id="commentsList" class="flex-grow overflow-y-auto p-4 flex flex-col items-center justify-center text-center">
+        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">Belum ada komentar</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Katakan sesuatu untuk memulai percakapan</p>
+      </div>
+      
+      <!-- Input Form (Fixed Bottom Bar) -->
+      <form id="commentForm" onsubmit="submitComment(event)" class="p-3 border-t border-gray-200 dark:border-[#222] bg-white dark:bg-[#0f0f0f] flex flex-col gap-2">
+        <div class="flex gap-2">
+          <input type="text" id="commentNickname" required class="flex-grow bg-gray-100 dark:bg-[#1a1a1a] rounded-lg px-3 py-1.5 text-xs border border-transparent focus:border-gray-400 outline-none" placeholder="Nama Anda">
+          <button type="button" onclick="randomizeNickname()" class="px-2.5 py-1.5 bg-gray-200 dark:bg-[#222] rounded-lg text-xs font-semibold">🎲 Acak</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="text" id="commentContent" required class="flex-grow bg-gray-100 dark:bg-[#1a1a1a] rounded-full px-4 py-2 text-xs border border-transparent focus:border-gray-400 outline-none" placeholder="Komentar...">
+          <button type="submit" id="submitBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full text-xs transition-colors flex-shrink-0">Kirim</button>
+        </div>
       </form>
     </div>
   </div>
@@ -101,31 +135,60 @@
     const urlParams = new URLSearchParams(window.location.search);
     const currentCode = urlParams.get('code');
     let currentVideoData = null;
+    let allComments = [];
 
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-    // Init Logic
+    function toggleTheme() {
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.theme = 'light';
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.theme = 'dark';
+      }
+    }
+
+    function getFormattedDate(item) {
+      return item.date || `${item.day || ''} ${item.month || ''} ${item.year || ''}`.trim() || "N/A";
+    }
+
     async function init() {
-      if(!currentCode) window.location.href = 'index.html';
+      if(!currentCode) {
+        window.location.href = 'index.html';
+        return;
+      }
+      
       const res = await fetch('data.json');
       const videos = await res.json();
       currentVideoData = videos.find(v => v.dood_code === currentCode);
+
+      if(!currentVideoData) {
+        document.getElementById('videoTitle').innerText = "Video tidak ditemukan";
+        return;
+      }
       
-      // Update UI
+      // Load UI Data Video
       document.getElementById('videoTitle').innerText = currentVideoData.title;
       document.getElementById('doodPlayer').src = `https://dood.so/e/${currentVideoData.dood_code}`;
       
-      const dateStr = currentVideoData.date || "N/A";
+      const dateStr = getFormattedDate(currentVideoData);
+      
       document.getElementById('videoMeta').innerText = "Memuat view...";
       document.getElementById('summaryDate').innerText = dateStr;
       document.getElementById('videoDescription').innerText = currentVideoData.description || "Tidak ada deskripsi.";
 
-      // Load Views
+      // Load Views Utama
       fetch(`https://api.countapi.xyz/hit/replay_jkt48_catalog_v1/${currentCode}`)
-        .then(r => r.json()).then(d => {
-          document.getElementById('videoMeta').innerText = `${d.value.toLocaleString()} x ditonton`;
-          document.getElementById('summaryViews').innerText = d.value.toLocaleString();
+        .then(r => r.json())
+        .then(d => {
+          const formattedViews = (d.value || 0).toLocaleString();
+          document.getElementById('videoMeta').innerText = `${formattedViews} x ditonton`;
+          document.getElementById('summaryViews').innerText = formattedViews;
+        })
+        .catch(() => {
+          document.getElementById('videoMeta').innerText = "0 x ditonton";
         });
 
       randomizeNickname();
@@ -133,51 +196,130 @@
       fetchComments(currentCode);
     }
 
-    // Comment Logic
     function randomizeNickname() {
-      const names = ['Wota', 'Fans', 'Penonton', 'Oshi', 'Wota48'];
+      const names = ['Wota', 'FansJKT', 'Penonton', 'OshiGita', 'Wota48'];
       document.getElementById('commentNickname').value = names[Math.floor(Math.random()*names.length)] + '_' + Math.floor(Math.random()*9000);
     }
 
     async function fetchComments(code) {
-      const res = await fetch(`https://cusdis.com/api/open/comments?appId=${CUSDIS_APP_ID}&pageId=${code}`);
-      const data = await res.json();
-      const list = document.getElementById('commentsList');
-      list.innerHTML = data.data.list.map(c => `
-        <div class="text-xs">
-          <span class="font-bold text-[#896f3d]">${c.nickname}</span>
-          <p class="text-gray-300 mt-1">${c.content}</p>
+      try {
+        const res = await fetch(`https://cusdis.com/api/open/comments?appId=${CUSDIS_APP_ID}&pageId=${code}`);
+        const data = await res.json();
+        allComments = data.data.list || [];
+        
+        const previewEl = document.getElementById('previewCommentText');
+        if (allComments.length > 0) {
+          previewEl.innerText = `${allComments[0].nickname}: "${allComments[0].content}"`;
+          renderCommentList(allComments);
+        } else {
+          previewEl.innerText = "Komentar...";
+          renderEmptyComments();
+        }
+      } catch(e) {
+        renderEmptyComments();
+      }
+    }
+
+    function renderEmptyComments() {
+      document.getElementById('commentsList').className = "flex-grow overflow-y-auto p-4 flex flex-col items-center justify-center text-center";
+      document.getElementById('commentsList').innerHTML = `
+        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">Belum ada komentar</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Katakan sesuatu untuk memulai percakapan</p>
+      `;
+    }
+
+    function renderCommentList(list) {
+      const listEl = document.getElementById('commentsList');
+      listEl.className = "flex-grow overflow-y-auto p-4 space-y-4";
+      listEl.innerHTML = list.map(c => `
+        <div class="text-xs flex gap-2.5 items-start">
+          <div class="w-6 h-6 rounded-full bg-gray-300 dark:bg-gray-700 flex-shrink-0 flex items-center justify-center text-[10px] text-gray-600 dark:text-gray-300 font-bold">
+            ${c.nickname.charAt(0).toUpperCase()}
+          </div>
+          <div class="flex flex-col">
+            <span class="font-bold text-gray-900 dark:text-gray-200">${c.nickname}</span>
+            <p class="text-gray-700 dark:text-gray-300 mt-0.5 leading-normal">${c.content}</p>
+          </div>
         </div>
       `).join('');
+    }
+
+    function switchTab(type) {
+      const btnTop = document.getElementById('tabTop');
+      const btnNew = document.getElementById('tabNew');
+      if (type === 'top') {
+        btnTop.className = "px-3 py-1 bg-gray-900 text-white dark:bg-white dark:text-black rounded-lg text-xs font-semibold";
+        btnNew.className = "px-3 py-1 bg-gray-200 text-gray-700 dark:bg-[#252525] dark:text-gray-300 rounded-lg text-xs font-semibold";
+        renderCommentList(allComments);
+      } else {
+        btnNew.className = "px-3 py-1 bg-gray-900 text-white dark:bg-white dark:text-black rounded-lg text-xs font-semibold";
+        btnTop.className = "px-3 py-1 bg-gray-200 text-gray-700 dark:bg-[#252525] dark:text-gray-300 rounded-lg text-xs font-semibold";
+        renderCommentList([...allComments].reverse());
+      }
     }
 
     async function submitComment(e) {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
-      await fetch('https://cusdis.com/api/open/comment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          appId: CUSDIS_APP_ID, pageId: currentCode,
-          nickname: document.getElementById('commentNickname').value,
-          content: document.getElementById('commentContent').value
-        })
-      });
-      document.getElementById('commentContent').value = '';
-      btn.disabled = false;
-      fetchComments(currentCode);
+      btn.innerText = '...';
+      
+      try {
+        await fetch('https://cusdis.com/api/open/comment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            appId: CUSDIS_APP_ID, 
+            pageId: currentCode,
+            nickname: document.getElementById('commentNickname').value,
+            content: document.getElementById('commentContent').value
+          })
+        });
+        document.getElementById('commentContent').value = '';
+        fetchComments(currentCode);
+      } catch(err) {
+        alert("Gagal mengirim komentar.");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Kirim';
+      }
     }
 
+    // Menggunakan CARA 1 (Elemen <a>) untuk Menu Browser Native
     function renderRecs(all, current) {
       const list = document.getElementById('recommendationsList');
-      all.filter(v => v.dood_code !== current.dood_code).slice(0,5).forEach(v => {
-        const div = document.createElement('div');
-        div.className = "flex gap-2 cursor-pointer";
-        div.onclick = () => window.location.href = `watch.html?code=${v.dood_code}`;
-        div.innerHTML = `<img src="${v.thumb}" class="w-32 aspect-video rounded-lg object-cover">
-                         <div class="text-xs font-semibold line-clamp-2">${v.title}</div>`;
-        list.appendChild(div);
+      list.innerHTML = '';
+      const filtered = all.filter(v => v.dood_code !== current.dood_code).slice(0, 6);
+
+      filtered.forEach(v => {
+        const vDate = getFormattedDate(v);
+        
+        // Memakai tag <a> native
+        const a = document.createElement('a');
+        a.href = `watch.html?code=${v.dood_code}`;
+        a.className = "flex gap-3 group items-start cursor-pointer hover:bg-gray-50 dark:hover:bg-[#111] p-1.5 rounded-xl transition-colors block";
+        
+        a.innerHTML = `
+          <img src="${v.thumb}" class="w-32 aspect-video rounded-lg object-cover flex-shrink-0 bg-gray-200 dark:bg-gray-800">
+          <div class="flex flex-col text-xs min-w-0 flex-1">
+            <h3 class="font-semibold line-clamp-2 leading-snug group-hover:text-blue-500 transition-colors text-gray-900 dark:text-gray-100">${v.title}</h3>
+            <span class="text-gray-500 dark:text-gray-400 mt-1 text-[11px]">${vDate}</span>
+            <span id="rec-views-${v.dood_code}" class="text-gray-500 dark:text-gray-400 text-[11px]">Memuat views...</span>
+          </div>
+        `;
+        list.appendChild(a);
+
+        // Fetch views rekomendasi
+        fetch(`https://api.countapi.xyz/get/replay_jkt48_catalog_v1/${v.dood_code}`)
+          .then(r => r.json())
+          .then(d => {
+            const el = document.getElementById(`rec-views-${v.dood_code}`);
+            if (el) el.innerText = `${(d.value || 0).toLocaleString()} x ditonton`;
+          })
+          .catch(() => {
+            const el = document.getElementById(`rec-views-${v.dood_code}`);
+            if (el) el.innerText = `0 x ditonton`;
+          });
       });
     }
 
