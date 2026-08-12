@@ -11,7 +11,7 @@
       darkMode: 'class',
     }
   </script>
-  <!-- Skrip Inisialisasi Tema (Membaca LocalStorage saat halaman pertama dimuat) -->
+  <!-- Skrip Inisialisasi Tema (Membaca LocalStorage saat halaman dimuat) -->
   <script>
     if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.classList.add('dark');
@@ -36,15 +36,15 @@
         <span class="bg-[#a88a55] text-black font-bold px-2 py-0.5 rounded text-sm tracking-wider">REPLAY</span>
         <span class="text-black dark:text-white font-bold text-lg ml-2 tracking-wide">JKT48</span>
       </a>
-      <!-- Tombol Switcher Mode Gelap / Terang -->
-      <button onclick="toggleTheme()" class="bg-transparent p-2 text-xl hover:opacity-80 transition-opacity">
-        <span class="dark:hidden">🌙</span>
-        <span class="hidden dark:inline">☀️</span>
+      <!-- Tombol Switcher Tema Tanpa Background -->
+      <button id="themeToggle" class="bg-transparent p-2 text-xl hover:opacity-80 transition-opacity outline-none">
+        <span id="sunIcon">☀️</span>
+        <span id="moonIcon" class="hidden">🌙</span>
       </button>
     </div>
   </header>
 
-  <!-- Main Content Layout (Grid 2 Kolom Aktif Mulai Ukuran md / 768px) -->
+  <!-- Main Content Layout (Grid 2 Kolom di Ukuran Desktop / md+) -->
   <main class="max-w-6xl mx-auto w-full p-4 grid grid-cols-1 md:grid-cols-3 gap-6">
     
     <!-- Kolom Kiri: Player & Info Video -->
@@ -100,27 +100,50 @@
   <div id="commentModal" class="fixed inset-0 z-50 hidden">
     <div class="absolute inset-0 bg-black/60" onclick="history.back()"></div>
     <div class="sheet-transition hidden-sheet absolute bottom-0 w-full h-[85vh] bg-white dark:bg-[#0f0f0f] rounded-t-2xl flex flex-col overflow-hidden">
+      
+      <!-- Header Modal Komentar -->
       <div class="px-6 py-3 border-b border-gray-200 dark:border-[#222] flex justify-between items-center">
         <h2 class="font-bold text-base">Komentar</h2>
         <button onclick="history.back()" class="text-xl">✕</button>
       </div>
 
-      <!-- Daftar Komentar (Warna Kartu Berselang-seling) -->
+      <!-- Tombol Seleksi Filter Komentar (Teratas / Terbaru) -->
+      <div class="px-4 py-3 flex gap-2 border-b border-gray-100 dark:border-[#1a1a1a]">
+        <button id="btnSortTop" onclick="setSort('top')" class="px-4 py-1.5 rounded-xl text-xs font-semibold transition-all bg-gray-900 text-white dark:bg-white dark:text-black">
+          Teratas
+        </button>
+        <button id="btnSortLatest" onclick="setSort('latest')" class="px-4 py-1.5 rounded-xl text-xs font-semibold transition-all bg-gray-200 text-gray-700 dark:bg-[#222] dark:text-gray-300">
+          Terbaru
+        </button>
+      </div>
+
+      <!-- Daftar Komentar -->
       <div id="commentsList" class="flex-grow overflow-y-auto p-4 space-y-3"></div>
 
       <!-- Form Komentar -->
-      <form id="commentForm" onsubmit="submitComment(event)" class="p-3 border-t border-gray-200 dark:border-[#222] flex items-center gap-2 bg-white dark:bg-[#0f0f0f]">
-        <div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-[#333] flex items-center justify-center text-xs flex-shrink-0">
-          👤
+      <form id="commentForm" onsubmit="submitComment(event)" class="p-3 border-t border-gray-200 dark:border-[#222] flex flex-col gap-2 bg-white dark:bg-[#0f0f0f]">
+        <!-- Input Nama Pengguna (Custom Nickname) -->
+        <div class="flex items-center gap-2 px-1">
+          <input type="text" id="commentNickname" placeholder="Nama Anda (opsional)..." class="w-full bg-gray-100 dark:bg-[#222] text-black dark:text-white rounded-lg px-3 py-1.5 text-xs outline-none focus:ring-1 focus:ring-[#a88a55]">
         </div>
-        <div class="flex-grow">
-          <input type="text" id="commentContent" placeholder="Komentar..." required class="w-full bg-gray-100 dark:bg-[#222] text-black dark:text-white rounded-full px-4 py-2 text-xs outline-none">
+        
+        <!-- Input Isi Komentar & Tombol Kirim -->
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-[#333] flex items-center justify-center text-xs flex-shrink-0">
+            👤
+          </div>
+          <div class="flex-grow">
+            <input type="text" id="commentContent" placeholder="Komentar..." required class="w-full bg-gray-100 dark:bg-[#222] text-black dark:text-white rounded-full px-4 py-2 text-xs outline-none focus:ring-1 focus:ring-[#a88a55]">
+          </div>
+          
+          <!-- Tombol Kirim Presisi Flexbox Sempurna -->
+          <button type="submit" id="submitBtn" class="w-9 h-9 rounded-full bg-gray-200 dark:bg-[#2d2d2d] hover:bg-gray-300 dark:hover:bg-[#3d3d3d] flex items-center justify-center flex-shrink-0 transition-colors">
+            <svg class="w-4 h-4 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
         </div>
-        <button type="submit" id="submitBtn" class="w-9 h-9 rounded-full bg-gray-200 dark:bg-[#2d2d2d] hover:bg-gray-300 dark:hover:bg-[#3d3d3d] flex items-center justify-center flex-shrink-0 transition-colors">
-          <svg class="w-4 h-4 text-gray-700 dark:text-gray-200 transform rotate-45 -translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-          </svg>
-        </button>
       </form>
     </div>
   </div>
@@ -130,7 +153,32 @@
     const urlParams = new URLSearchParams(window.location.search);
     const currentCode = urlParams.get('code');
     let activeModal = null;
+    let commentsData = [];
+    let currentSort = 'top';
 
+    // --- LOGIKA TEMA DARK / LIGHT ---
+    const themeToggle = document.getElementById('themeToggle');
+    const sunIcon = document.getElementById('sunIcon');
+    const moonIcon = document.getElementById('moonIcon');
+
+    function updateIcons() {
+      if (document.documentElement.classList.contains('dark')) {
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+      } else {
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+      }
+    }
+    updateIcons();
+
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      updateIcons();
+    });
+
+    // --- MANAJEMEN MODAL SHEET ---
     window.onpopstate = () => { closeModal(); };
 
     function openModal(id) {
@@ -146,18 +194,14 @@
       setTimeout(() => { activeModal.classList.add('hidden'); activeModal = null; }, 300);
     }
 
-    // Fungsi Pengalih Tema Gelap/Terang
-    function toggleTheme() {
-      if (document.documentElement.classList.contains('dark')) {
-        document.documentElement.classList.remove('dark');
-        localStorage.theme = 'light';
-      } else {
-        document.documentElement.classList.add('dark');
-        localStorage.theme = 'dark';
-      }
-    }
-
+    // --- INISIALISASI HALAMAN ---
     async function init() {
+      // Muat Nama Pengguna yang Tersimpan
+      const savedNickname = localStorage.getItem('user_nickname');
+      if (savedNickname) {
+        document.getElementById('commentNickname').value = savedNickname;
+      }
+
       try {
         const res = await fetch('data.json');
         const videos = await res.json();
@@ -168,11 +212,9 @@
           document.getElementById('doodPlayer').src = `https://dood.so/e/${currentVideo.dood_code}`;
           document.getElementById('videoDescription').innerText = currentVideo.description || "Tidak ada deskripsi.";
           
-          // Memastikan Tahun Ditampilkan Lengkap
           const fullDate = currentVideo.date || `${currentVideo.day || ''} ${currentVideo.month || ''} ${currentVideo.year || ''}`.trim();
           document.getElementById('statDate').innerText = fullDate || "-";
 
-          // Fetch Views
           fetch(`https://api.countapi.xyz/hit/replay_jkt48_catalog_v1/${currentCode}`)
             .then(r => r.json())
             .then(d => {
@@ -183,7 +225,6 @@
               document.getElementById('videoMeta').innerText = "Belum ada penayangan";
             });
 
-          // Render Rekomendasi Video
           const recList = document.getElementById('recommendationsList');
           recList.innerHTML = '';
           videos.filter(v => v.dood_code !== currentCode).slice(0, 8).forEach(v => {
@@ -205,54 +246,104 @@
       fetchComments();
     }
 
+    // --- MANAJEMEN KOMENTAR ---
     async function fetchComments() {
       if(!currentCode) return;
       try {
         const res = await fetch(`https://cusdis.com/api/open/comments?appId=${CUSDIS_APP_ID}&pageId=${currentCode}`);
         const data = await res.json();
-        const list = document.getElementById('commentsList');
         
-        if(data.data.list.length > 0) {
-          document.getElementById('previewCommentText').innerText = `${data.data.list[0].nickname}: ${data.data.list[0].content}`;
-          list.innerHTML = data.data.list.map((c, i) => `
-            <div class="p-3 rounded-xl ${i % 2 === 0 ? 'bg-gray-100 dark:bg-[#1a1a1a]' : 'bg-gray-200/70 dark:bg-[#222]'}">
-              <div class="font-bold text-[11px] opacity-80 mb-0.5">${c.nickname}</div>
-              <div class="text-xs leading-relaxed">${c.content}</div>
-            </div>
-          `).join('');
-        } else {
-          list.innerHTML = '<div class="text-xs text-center text-gray-500 py-8">Belum ada komentar.</div>';
+        if(data && data.data && data.data.list) {
+          commentsData = data.data.list;
+          if (commentsData.length > 0) {
+            document.getElementById('previewCommentText').innerText = `${commentsData[0].nickname}: ${commentsData[0].content}`;
+          }
+          renderComments();
         }
-      } catch(e) {}
+      } catch(e) {
+        console.error("Gagal mengambil komentar:", e);
+      }
+    }
+
+    function setSort(type) {
+      currentSort = type;
+      const btnTop = document.getElementById('btnSortTop');
+      const btnLatest = document.getElementById('btnSortLatest');
+
+      if (type === 'top') {
+        btnTop.className = "px-4 py-1.5 rounded-xl text-xs font-semibold transition-all bg-gray-900 text-white dark:bg-white dark:text-black";
+        btnLatest.className = "px-4 py-1.5 rounded-xl text-xs font-semibold transition-all bg-gray-200 text-gray-700 dark:bg-[#222] dark:text-gray-300";
+      } else {
+        btnLatest.className = "px-4 py-1.5 rounded-xl text-xs font-semibold transition-all bg-gray-900 text-white dark:bg-white dark:text-black";
+        btnTop.className = "px-4 py-1.5 rounded-xl text-xs font-semibold transition-all bg-gray-200 text-gray-700 dark:bg-[#222] dark:text-gray-300";
+      }
+      renderComments();
+    }
+
+    function renderComments() {
+      const list = document.getElementById('commentsList');
+      if(!commentsData || commentsData.length === 0) {
+        list.innerHTML = '<div class="text-xs text-center text-gray-500 py-8">Belum ada komentar.</div>';
+        return;
+      }
+
+      let listToRender = [...commentsData];
+      if (currentSort === 'latest') {
+        listToRender.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      }
+
+      list.innerHTML = listToRender.map((c, i) => `
+        <div class="p-3 rounded-xl ${i % 2 === 0 ? 'bg-gray-100 dark:bg-[#1a1a1a]' : 'bg-gray-200/70 dark:bg-[#222]'}">
+          <div class="font-bold text-[11px] opacity-80 mb-0.5">${c.nickname}</div>
+          <div class="text-xs leading-relaxed">${c.content}</div>
+        </div>
+      `).join('');
     }
 
     async function submitComment(e) {
       e.preventDefault();
-      const input = document.getElementById('commentContent');
-      const text = input.value.trim();
+      const contentInput = document.getElementById('commentContent');
+      const nicknameInput = document.getElementById('commentNickname');
+      
+      const text = contentInput.value.trim();
+      const customName = nicknameInput.value.trim() || 'Penggemar';
+
       if(!text || !currentCode) return;
+
+      // Simpan Nama Ke LocalStorage
+      if (nicknameInput.value.trim()) {
+        localStorage.setItem('user_nickname', nicknameInput.value.trim());
+      }
 
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
 
       try {
+        const payload = {
+          appId: CUSDIS_APP_ID,
+          pageId: currentCode,
+          pageUrl: window.location.href,
+          pageTitle: document.title || 'Replay JKT48',
+          nickname: customName,
+          content: text
+        };
+
         const res = await fetch('https://cusdis.com/api/open/comment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            appId: CUSDIS_APP_ID,
-            pageId: currentCode,
-            nickname: 'Penggemar',
-            content: text
-          })
+          body: JSON.stringify(payload)
         });
 
-        if(res.ok) {
-          input.value = '';
-          fetchComments();
+        if (res.ok) {
+          contentInput.value = '';
+          await fetchComments();
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          alert("Gagal mengirim komentar: " + (errData.msg || "Terjadi kesalahan server."));
         }
       } catch(e) {
-        alert("Gagal mengirim komentar.");
+        console.error(e);
+        alert("Gagal mengirim komentar. Pastikan koneksi internet stabil.");
       } finally {
         btn.disabled = false;
       }
